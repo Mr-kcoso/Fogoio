@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nat e o Mundo Encantado 💙</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
+
+    * {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      overflow: hidden;
+    }
+
+    .game-container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animações */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes pulse-heart {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes rain {
+      0% { transform: translateY(-10px); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+
+    @keyframes spin-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .pulse-heart {
+      animation: pulse-heart 2s ease-in-out infinite;
+    }
+
+    .raindrop {
+      animation: rain 1.5s linear infinite;
+      position: fixed;
+      width: 2px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.7);
+      left: var(--x);
+    }
+
+    .spin {
+      animation: spin-slow 3s linear infinite;
+    }
+
+    /* Cenários */
+    .scene {
+      display: none;
+      flex: 1;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scene.active {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .scene-rainy {
+      background: linear-gradient(180deg, #4a5f7f 0%, #6b8cbb 50%, #8fa3c8 100%);
+    }
+
+    .scene-sunset {
+      background: linear-gradient(180deg, #ff6b9d 0%, #ffa502 50%, #ffd89b 100%);
+    }
+
+    .scene-library {
+      background: linear-gradient(180deg, #2d3436 0%, #636e72 100%);
+    }
+
+    .scene-magical {
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    }
+
+    /* Personagens */
+    .character {
+      font-size: 4rem;
+      margin: 1rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .character.small {
+      font-size: 2rem;
+    }
+
+    /* Cards e botões */
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 0.5rem;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-blue {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .btn-green {
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+
+    /* Mensagens */
+    .message {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 1rem;
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .message-romantic {
+      font-size: 1.1rem;
+      color: #ffd6e8;
+      margin-top: 2rem;
+      font-style: italic;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    /* Progress */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+      transition: width 0.3s ease;
+    }
+
+    /* Mini-games */
+    .piano-key {
+      width: 40px;
+      height: 60px;
+      background: white;
+      border: 2px solid #333;
+      border-radius: 5px;
+      margin: 5px;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+
+    .piano-key:hover {
+      background: #f0f0f0;
+      transform: scale(1.05);
+    }
+
+    .piano-key.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .quiz-option {
+      background: rgba(255, 255, 255, 0.9);
+      border: 3px solid transparent;
+      padding: 1rem;
+      margin: 0.5rem;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      max-width: 300px;
+    }
+
+    .quiz-option:hover {
+      border-color: #667eea;
+      transform: scale(1.02);
+    }
+
+    .quiz-option.correct {
+      background: #43e97b;
+      color: white;
+      border-color: #43e97b;
+    }
+
+    .quiz-option.wrong {
+      background: #ff6b6b;
+      color: white;
+      border-color: #ff6b6b;
+    }
+
+    /* Heart */
+    .final-heart {
+      font-size: 6rem;
+      animation: pulse-heart 0.8s ease-in-out infinite;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ffd6e8;
+      border-radius: 50%;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="game-container" id="gameContainer"><!-- Header -->
+   <div class="p-4 flex justify-between items-center bg-black/20">
+    <div class="text-white font-bold text-xl">
+     💙 Nat e o Mundo Encantado
+    </div>
+    <div class="text-white text-lg" id="phaseInfo">
+     Fase 1/6
+    </div>
+   </div><!-- Progress -->
+   <div class="px-4">
+    <div class="progress-bar">
+     <div class="progress-fill" id="progressFill" style="width: 16.67%"></div>
+    </div>
+   </div><!-- Scenes --> <!-- Fase 1: Chuva -->
+   <div class="scene scene-rainy active" id="scene1">
+    <div class="message">
+     🌧️ Bem-vinda ao mundo encantado, Nat!
+    </div>
+    <div class="character">
+     🌧️
+    </div>
+    <div class="card">
+     <h2 class="text-2xl font-bold text-purple-600 mb-4">Primeira aventura: A Chuva</h2>
+     <p class="text-gray-700 mb-4">Você adore quando chove... Vamos começar?</p><button class="btn btn-blue" onclick="nextPhase()">Continuar ➜</button>
+    </div>
+   </div><!-- Fase 2: Piano -->
+   <div class="scene scene-library" id="scene2">
+    <div class="message">
+     🎹 Toque uma melodia mágica
+    </div>
+    <div class="character">
+     🎹
+    </div>
+    <div class="card">
+     <h2 class="text-2xl font-bold text-purple-300 mb-4">Desafio Musical</h2>
+     <div id="pianoContainer" class="flex justify-center gap-1 mb-6 flex-wrap"><!-- Teclas do piano serão geradas aqui -->
+     </div>
+     <div id="sequence" class="text-white mb-4 text-lg"></div><button class="btn btn-green" onclick="startPianoGame()">Começar Desafio</button>
+    </div>
+   </div><!-- Fase 3: Quiz -->
+   <div class="scene scene-library" id="scene3">
+    <div class="message">
+     📚 Quiz Literário
+    </div>
+    <div class="character">
+     📖
+    </div>
+    <div class="card">
+     <h2 class="text-2xl font-bold text-purple-300 mb-4">Qual é a sua casa de Hogwarts?</h2>
+     <div id="quizContainer"><!-- Opções de quiz serão geradas aqui -->
+     </div>
+    </div>
+   </div><!-- Fase 4: Coleta de sushi -->
+   <div class="scene scene-sunset" id="scene4">
+    <div class="message">
+     🍣 Colete seus petiscos favoritos!
+    </div>
+    <div class="character">
+     🍣
+    </div>
+    <div class="card">
+     <h2 class="text-2xl font-bold text-orange-600 mb-4">Hora da Diversão</h2>
+     <p class="text-gray-700 mb-4">Clique nos petiscos que você ama!</p>
+     <div id="foodContainer" class="flex justify-center gap-4 mb-6 flex-wrap"><!-- Comidas serão geradas aqui -->
+     </div>
+     <div id="foodScore" class="text-2xl font-bold text-orange-600 mb-4">
+      0/4 coletados
+     </div><button class="btn btn-blue" onclick="nextPhase()">Próxima Fase ➜</button>
+    </div>
+   </div><!-- Fase 5: Cachorrinhas Mágicas -->
+   <div class="scene scene-magical" id="scene5">
+    <div class="message">
+     🐕 Suas companheiras mágicas chegaram!
+    </div>
+    <div style="display: flex; gap: 2rem; justify-center; margin: 2rem;">
+     <div class="character small floating">
+      🐕
+     </div>
+     <div class="character small floating" style="animation-delay: 0.5s;">
+      🐕
+     </div>
+    </div>
+    <div class="card">
+     <h2 class="text-2xl font-bold text-pink-400 mb-4">Fanny e Cacau</h2>
+     <p class="text-gray-700 mb-4">Suas bolinhas de energia aparecem para ajudar na aventura final!</p><button class="btn btn-green" onclick="nextPhase()">Continuar ➜</button>
+    </div>
+   </div><!-- Fase 6: Mensagem Final -->
+   <div class="scene scene-magical" id="scene6">
+    <div class="final-heart">
+     💙
+    </div>
+    <div class="card">
+     <h2 class="text-3xl font-bold text-purple-600 mb-4">Feliz 4 meses, Nat! 🎉</h2>
+     <div class="message-romantic">
+      "Você reuniu tudo que ama nesta aventura porque você É meu mundo encantado.<br><br>
+       Sua chuva quando você está triste, seu sushi que você devora com felicidade, sua música que toca meu coração, seus livros que te transportam, suas cachorrinhas que trazem alegria, e você... sempre você.<br><br>
+       Obrigado por cada dia ao seu lado. 💙"
+     </div><button class="btn btn-blue" onclick="restartGame()" style="margin-top: 2rem;">Jogar Novamente 🎮</button>
+    </div>
+   </div>
+  </div>
+  <script>
+    let currentPhase = 1;
+    const totalPhases = 6;
+    let pianoSequence = [];
+    let userSequence = [];
+    let foodCollected = 0;
+    const foodTarget = 4;
+
+    // Criar raindrops ao carregar
+    function createRain() {
+      for (let i = 0; i < 20; i++) {
+        const raindrop = document.createElement('div');
+        raindrop.className = 'raindrop';
+        raindrop.style.setProperty('--x', Math.random() * 100 + '%');
+        raindrop.style.animationDelay = Math.random() * 1.5 + 's';
+        document.body.appendChild(raindrop);
+      }
+    }
+
+    function nextPhase() {
+      currentPhase++;
+      if (currentPhase > totalPhases) {
+        currentPhase = totalPhases;
+      }
+      updateScene();
+    }
+
+    function updateScene() {
+      // Esconder todas as cenas
+      document.querySelectorAll('.scene').forEach(scene => {
+        scene.classList.remove('active');
+      });
+
+      // Mostrar a cena atual
+      const currentScene = document.getElementById(`scene${currentPhase}`);
+      if (currentScene) {
+        currentScene.classList.add('active');
+      }
+
+      // Atualizar progress
+      const progress = (currentPhase / totalPhases) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+      document.getElementById('phaseInfo').textContent = `Fase ${currentPhase}/${totalPhases}`;
+
+      // Inicializar conteúdo específico
+      if (currentPhase === 2) {
+        initPiano();
+      } else if (currentPhase === 3) {
+        initQuiz();
+      } else if (currentPhase === 4) {
+        initFood();
+      }
+
+      // Chamar lucide para atualizar ícones
+      lucide.createIcons();
+    }
+
+    function initPiano() {
+      const container = document.getElementById('pianoContainer');
+      container.innerHTML = '';
+      const notes = ['Do', 'Re', 'Mi', 'Fa', 'Sol'];
+      notes.forEach((note, index) => {
+        const key = document.createElement('button');
+        key.className = 'piano-key';
+        key.textContent = note;
+        key.onclick = () => selectPianoKey(index, key);
+        container.appendChild(key);
+      });
+    }
+
+    function startPianoGame() {
+      pianoSequence = [Math.floor(Math.random() * 5)];
+      userSequence = [];
+      playSequence();
+    }
+
+    function playSequence() {
+      document.getElementById('sequence').textContent = 'Assista a sequência...';
+      let delay = 0;
+      pianoSequence.forEach((index, i) => {
+        setTimeout(() => {
+          const keys = document.querySelectorAll('.piano-key');
+          keys[index].classList.add('active');
+          setTimeout(() => {
+            keys[index].classList.remove('active');
+          }, 300);
+        }, delay);
+        delay += 600;
+      });
+      setTimeout(() => {
+        document.getElementById('sequence').textContent = 'Agora é sua vez!';
+      }, delay);
+    }
+
+    function selectPianoKey(index, element) {
+      userSequence.push(index);
+      element.classList.add('active');
+      setTimeout(() => {
+        element.classList.remove('active');
+      }, 300);
+
+      if (userSequence[userSequence.length - 1] !== pianoSequence[userSequence.length - 1]) {
+        document.getElementById('sequence').textContent = '❌ Errou! Tente novamente';
+        userSequence = [];
+        return;
+      }
+
+      if (userSequence.length === pianoSequence.length) {
+        document.getElementById('sequence').textContent = '✅ Perfeito! Você desbloqueou um segredo musical!';
+        setTimeout(() => {
+          nextPhase();
+        }, 1500);
+      }
+    }
+
+    function initQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = '';
+      const options = [
+        { text: '🟢 Grifinória - Como Harry Potter!', correct: true },
+        { text: '🟢 Sonserina - Mistério e magia', correct: false },
+        { text: '🔵 Corvinal - Sabedoria sem fim', correct: false },
+        { text: '🟡 Lufa-Lufa - Lealdade e calor', correct: false }
+      ];
+
+      options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option';
+        btn.textContent = option.text;
+        btn.onclick = () => selectQuizOption(btn, option.correct);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectQuizOption(element, isCorrect) {
+      document.querySelectorAll('.quiz-option').forEach(opt => opt.style.pointerEvents = 'none');
+      
+      if (isCorrect) {
+        element.classList.add('correct');
+        element.textContent += ' ✅';
+        setTimeout(() => {
+          nextPhase();
+        }, 1500);
+      } else {
+        element.classList.add('wrong');
+        element.textContent += ' ❌';
+      }
+    }
+
+    function initFood() {
+      foodCollected = 0;
+      const container = document.getElementById('foodContainer');
+      container.innerHTML = '';
+      const foods = [
+        { emoji: '🍣', name: 'Sushi' },
+        { emoji: '🍦', name: 'Sorvete' },
+        { emoji: '🥛', name: 'Iogurte' },
+        { emoji: '🍋', name: 'Limão' }
+      ];
+
+      foods.forEach(food => {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-green';
+        btn.textContent = food.emoji + ' ' + food.name;
+        btn.style.fontSize = '1.5rem';
+        btn.onclick = () => collectFood(btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function collectFood(element) {
+      element.style.opacity = '0.3';
+      element.style.pointerEvents = 'none';
+      foodCollected++;
+      document.getElementById('foodScore').textContent = `${foodCollected}/${foodTarget} coletados`;
+
+      if (foodCollected === foodTarget) {
+        document.getElementById('foodScore').textContent = '✅ Todos coletados!';
+        setTimeout(() => {
+          nextPhase();
+        }, 1500);
+      }
+    }
+
+    function restartGame() {
+      currentPhase = 1;
+      foodCollected = 0;
+      updateScene();
+    }
+
+    // Iniciar o jogo
+    window.addEventListener('load', () => {
+      createRain();
+      lucide.createIcons();
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e0a57ab6423f249',t:'MTc3NDIzNjQ2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
