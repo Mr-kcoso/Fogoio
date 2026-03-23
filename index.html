@@ -1,1743 +1,334 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/index.html b/index.html
-index 25bce23d52d6c82de27487d3a13cf62fb93b3585..e60b8949c6fe27b6fa9560dd45419f7b6ad5087f 100644
---- a/index.html
-+++ b/index.html
-@@ -1,569 +1,1356 @@
- <!doctype html>
- <html lang="pt-BR">
+<!doctype html>
+<html lang="pt-BR">
   <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Nat e o Mundo Encantado 💙</title>
-   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
--  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-   <style>
--    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
-+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Press+Start+2P&display=swap');
-+
-+    :root {
-+      --bg-night: #081223;
-+      --bg-rain: #355c92;
-+      --bg-sunset: #f6a56f;
-+      --blue-1: #61dafb;
-+      --blue-2: #3a86ff;
-+      --blue-3: #1f4db6;
-+      --green-1: #7ed957;
-+      --green-2: #347433;
-+      --gold-1: #ffde7d;
-+      --gold-2: #ca9d23;
-+      --panel: rgba(9, 18, 40, 0.76);
-+      --panel-light: rgba(255, 255, 255, 0.88);
-+      --pixel-shadow: 0 0 0 4px #18356b, 0 0 0 8px #0c1b39, 10px 10px 0 rgba(0, 0, 0, 0.18);
-+    }
- 
-     * {
--      font-family: 'Fredoka', sans-serif;
-+      box-sizing: border-box;
-     }
- 
-     html, body {
--      height: 100%;
-       margin: 0;
--      padding: 0;
-+      min-height: 100%;
-+      overflow: hidden;
-+      background:
-+        radial-gradient(circle at top, rgba(86, 159, 255, 0.35), transparent 34%),
-+        linear-gradient(180deg, #081223 0%, #10274b 48%, #274d8a 100%);
-+      color: white;
-+      font-family: 'Fredoka', sans-serif;
-     }
- 
--    body {
--      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
--      overflow: hidden;
-+    body::before {
-+      content: '';
-+      position: fixed;
-+      inset: 0;
-+      pointer-events: none;
-+      background-image:
-+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-+      background-size: 24px 24px;
-+      mix-blend-mode: soft-light;
-+      opacity: 0.35;
-     }
- 
--    .game-container {
--      height: 100%;
-+    .game-shell {
-+      position: relative;
-+      min-height: 100vh;
-       display: flex;
-       flex-direction: column;
--      position: relative;
-       overflow: hidden;
-     }
- 
--    /* Animações */
--    @keyframes float {
--      0%, 100% { transform: translateY(0px); }
--      50% { transform: translateY(-10px); }
-+    .hud {
-+      position: relative;
-+      z-index: 5;
-+      display: flex;
-+      justify-content: space-between;
-+      align-items: center;
-+      gap: 1rem;
-+      padding: 1.2rem 1.5rem 0.8rem;
-+      flex-wrap: wrap;
-     }
- 
--    @keyframes pulse-heart {
--      0%, 100% { transform: scale(1); }
--      50% { transform: scale(1.1); }
-+    .pixel-title,
-+    .pixel-badge,
-+    .pixel-panel,
-+    .pixel-button,
-+    .pixel-card,
-+    .pixel-letter,
-+    .companion-bubble,
-+    .floating-item,
-+    .piano-key,
-+    .quiz-option,
-+    .choice-tile,
-+    .mascot-orb,
-+    .food-token {
-+      border-radius: 0;
-+      box-shadow: var(--pixel-shadow);
-     }
- 
--    @keyframes rain {
--      0% { transform: translateY(-10px); opacity: 0; }
--      10% { opacity: 1; }
--      90% { opacity: 1; }
--      100% { transform: translateY(100vh); opacity: 0; }
-+    .pixel-title {
-+      font-family: 'Press Start 2P', cursive;
-+      font-size: clamp(0.9rem, 2vw, 1.1rem);
-+      line-height: 1.8;
-+      padding: 0.9rem 1rem;
-+      background: linear-gradient(180deg, rgba(76, 130, 255, 0.95), rgba(19, 44, 94, 0.96));
-+      color: #dff4ff;
-+      text-shadow: 3px 3px 0 #153065;
-     }
- 
--    @keyframes spin-slow {
--      0% { transform: rotate(0deg); }
--      100% { transform: rotate(360deg); }
-+    .pixel-badge {
-+      background: rgba(7, 19, 42, 0.78);
-+      padding: 0.8rem 1rem;
-+      min-width: 240px;
-+      border: 4px solid #87c5ff;
-     }
- 
--    .floating {
--      animation: float 3s ease-in-out infinite;
-+    .hud-label {
-+      font-size: 0.82rem;
-+      color: #bfddff;
-+      text-transform: uppercase;
-+      letter-spacing: 0.08em;
-     }
- 
--    .pulse-heart {
--      animation: pulse-heart 2s ease-in-out infinite;
-+    .hud-value {
-+      font-size: 1.15rem;
-+      font-weight: 700;
-+      color: white;
-     }
- 
--    .raindrop {
--      animation: rain 1.5s linear infinite;
--      position: fixed;
--      width: 2px;
--      height: 10px;
--      background: rgba(255, 255, 255, 0.7);
--      left: var(--x);
-+    .progress-frame {
-+      position: relative;
-+      z-index: 5;
-+      margin: 0 1.5rem 1rem;
-+      padding: 0.55rem;
-+      background: rgba(3, 9, 23, 0.78);
-+      border: 4px solid #9dd0ff;
-+      box-shadow: 0 0 0 4px #102242;
-     }
- 
--    .spin {
--      animation: spin-slow 3s linear infinite;
-+    .progress-track {
-+      width: 100%;
-+      height: 20px;
-+      background: rgba(255,255,255,0.15);
-+      overflow: hidden;
-+      position: relative;
-+    }
-+
-+    .progress-fill {
-+      height: 100%;
-+      width: 14.28%;
-+      background:
-+        repeating-linear-gradient(
-+          90deg,
-+          #71d6ff 0 16px,
-+          #4fb8ff 16px 32px,
-+          #69e3b1 32px 48px,
-+          #a0ec6b 48px 64px
-+        );
-+      transition: width 0.35s ease;
-+    }
-+
-+    .progress-track::after {
-+      content: '';
-+      position: absolute;
-+      inset: 0;
-+      background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent);
-+      pointer-events: none;
-     }
- 
--    /* Cenários */
-     .scene {
-       display: none;
-       flex: 1;
--      padding: 2rem;
-       position: relative;
--      overflow: hidden;
-+      padding: 1rem 1.5rem 2rem;
-+      z-index: 2;
-     }
- 
-     .scene.active {
-       display: flex;
--      flex-direction: column;
-+      align-items: center;
-       justify-content: center;
-+    }
-+
-+    .backdrop {
-+      position: absolute;
-+      inset: 0;
-+      overflow: hidden;
-+    }
-+
-+    .backdrop.rainy {
-+      background:
-+        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.18), transparent 14%),
-+        linear-gradient(180deg, #3b5d93 0%, #4c77b0 42%, #6e94c6 100%);
-+    }
-+
-+    .backdrop.library {
-+      background:
-+        linear-gradient(180deg, rgba(20, 12, 46, 0.2), rgba(20, 12, 46, 0.85)),
-+        linear-gradient(180deg, #18233f 0%, #27355c 42%, #1e2948 100%);
-+    }
-+
-+    .backdrop.sunset {
-+      background:
-+        radial-gradient(circle at 70% 20%, rgba(255, 235, 145, 0.58), transparent 18%),
-+        linear-gradient(180deg, #28345c 0%, #a35682 35%, #f39e6c 80%, #ffd79e 100%);
-+    }
-+
-+    .backdrop.moon {
-+      background:
-+        radial-gradient(circle at 75% 18%, rgba(224, 231, 255, 0.5), transparent 16%),
-+        linear-gradient(180deg, #090d23 0%, #182557 48%, #27427b 100%);
-+    }
-+
-+    .backdrop.finale {
-+      background:
-+        radial-gradient(circle at center, rgba(114, 212, 255, 0.35), transparent 22%),
-+        linear-gradient(180deg, #0b1133 0%, #182b63 48%, #24458f 100%);
-+    }
-+
-+    .city-layer,
-+    .cloud-layer,
-+    .star-layer,
-+    .shelf-layer,
-+    .magic-layer,
-+    .grass-layer {
-+      position: absolute;
-+      inset: auto 0 0 0;
-+      pointer-events: none;
-+    }
-+
-+    .city-layer {
-+      height: 38%;
-+      background:
-+        repeating-linear-gradient(90deg,
-+          #17305e 0 50px,
-+          #244783 50px 86px,
-+          #102547 86px 130px,
-+          #3156a0 130px 182px),
-+        linear-gradient(180deg, transparent 0 55%, rgba(0,0,0,0.28) 55% 100%);
-+      clip-path: polygon(0 100%, 0 42%, 8% 42%, 8% 28%, 15% 28%, 15% 54%, 22% 54%, 22% 18%, 29% 18%, 29% 46%, 37% 46%, 37% 30%, 42% 30%, 42% 62%, 53% 62%, 53% 21%, 61% 21%, 61% 52%, 69% 52%, 69% 35%, 78% 35%, 78% 64%, 89% 64%, 89% 26%, 100% 26%, 100% 100%);
-+      opacity: 0.8;
-+    }
-+
-+    .cloud-layer {
-+      top: 6%;
-+      height: 120px;
-+      background:
-+        radial-gradient(circle at 10% 50%, rgba(255,255,255,0.3) 0 12%, transparent 13%),
-+        radial-gradient(circle at 26% 38%, rgba(255,255,255,0.22) 0 14%, transparent 15%),
-+        radial-gradient(circle at 43% 56%, rgba(255,255,255,0.17) 0 14%, transparent 15%),
-+        radial-gradient(circle at 68% 36%, rgba(255,255,255,0.18) 0 15%, transparent 16%),
-+        radial-gradient(circle at 84% 50%, rgba(255,255,255,0.21) 0 12%, transparent 13%);
-+      animation: drift 18s linear infinite;
-+    }
-+
-+    .star-layer {
-+      top: 0;
-+      bottom: auto;
-+      height: 55%;
-+      background-image:
-+        radial-gradient(circle, rgba(255,255,255,0.8) 0 1px, transparent 1.5px),
-+        radial-gradient(circle, rgba(174,220,255,0.9) 0 1px, transparent 1.5px),
-+        radial-gradient(circle, rgba(255,255,255,0.65) 0 1px, transparent 1.5px);
-+      background-size: 120px 120px, 170px 170px, 210px 210px;
-+      background-position: 0 0, 40px 30px, 90px 60px;
-+      opacity: 0.9;
-+      animation: twinkle 5s ease-in-out infinite;
-+    }
-+
-+    .shelf-layer {
-+      height: 42%;
-+      background:
-+        repeating-linear-gradient(90deg,
-+          #6b4226 0 24px,
-+          #8e5e3b 24px 48px,
-+          #bc8452 48px 72px,
-+          #7f5536 72px 96px),
-+        linear-gradient(180deg, transparent 0 12%, rgba(32,20,8,0.44) 12% 14%, transparent 14% 28%, rgba(32,20,8,0.44) 28% 30%, transparent 30% 44%, rgba(32,20,8,0.44) 44% 46%, transparent 46% 60%, rgba(32,20,8,0.44) 60% 62%, transparent 62% 100%);
-+      opacity: 0.7;
-+    }
-+
-+    .grass-layer {
-+      height: 22%;
-+      background:
-+        repeating-linear-gradient(90deg,
-+          #4c983f 0 18px,
-+          #67b852 18px 32px,
-+          #3f7f36 32px 50px),
-+        linear-gradient(180deg, rgba(255,255,255,0.08), transparent 40%);
-+      clip-path: polygon(0 100%, 0 34%, 6% 42%, 12% 28%, 18% 44%, 24% 33%, 30% 50%, 38% 30%, 46% 42%, 55% 24%, 63% 46%, 71% 28%, 79% 44%, 88% 34%, 94% 46%, 100% 30%, 100% 100%);
-+    }
-+
-+    .magic-layer {
-+      position: absolute;
-+      inset: 0;
-+      background:
-+        radial-gradient(circle at 15% 22%, rgba(95, 209, 255, 0.2), transparent 8%),
-+        radial-gradient(circle at 80% 26%, rgba(255, 221, 125, 0.2), transparent 9%),
-+        radial-gradient(circle at 52% 60%, rgba(126, 217, 87, 0.18), transparent 12%);
-+      animation: glowPulse 4s ease-in-out infinite;
-+    }
-+
-+    .rain-field {
-+      position: absolute;
-+      inset: 0;
-+      overflow: hidden;
-+      pointer-events: none;
-+      z-index: 1;
-+    }
-+
-+    .raindrop {
-+      position: absolute;
-+      width: 3px;
-+      height: 20px;
-+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(207,240,255,0.95));
-+      left: var(--x);
-+      top: -10%;
-+      opacity: 0.8;
-+      animation: rainDrop var(--speed) linear infinite;
-+      animation-delay: var(--delay);
-+    }
-+
-+    .scene-content {
-+      position: relative;
-+      z-index: 3;
-+      width: min(1180px, 100%);
-+      display: grid;
-+      grid-template-columns: 1.05fr 0.95fr;
-+      gap: 1.4rem;
-       align-items: center;
-     }
- 
--    .scene-rainy {
--      background: linear-gradient(180deg, #4a5f7f 0%, #6b8cbb 50%, #8fa3c8 100%);
-+    .pixel-panel {
-+      background: var(--panel);
-+      border: 4px solid #86cbff;
-+      padding: 1.25rem;
-+      backdrop-filter: blur(10px);
-+    }
-+
-+    .pixel-card {
-+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(226, 240, 255, 0.95));
-+      color: #153065;
-+      border: 4px solid #d8edff;
-+      padding: 1.25rem;
-     }
- 
--    .scene-sunset {
--      background: linear-gradient(180deg, #ff6b9d 0%, #ffa502 50%, #ffd89b 100%);
-+    .scene-kicker {
-+      display: inline-flex;
-+      align-items: center;
-+      gap: 0.55rem;
-+      font-family: 'Press Start 2P', cursive;
-+      font-size: 0.72rem;
-+      color: #bfe1ff;
-+      margin-bottom: 1rem;
-+      text-transform: uppercase;
-     }
- 
--    .scene-library {
--      background: linear-gradient(180deg, #2d3436 0%, #636e72 100%);
-+    .scene-title {
-+      font-size: clamp(2rem, 5vw, 3.6rem);
-+      line-height: 1.05;
-+      margin: 0 0 1rem;
-+      text-shadow: 4px 4px 0 rgba(8, 18, 40, 0.45);
-     }
- 
--    .scene-magical {
--      background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-+    .scene-description {
-+      font-size: 1.12rem;
-+      max-width: 650px;
-+      line-height: 1.7;
-+      color: #eaf5ff;
-     }
- 
--    /* Personagens */
--    .character {
--      font-size: 4rem;
--      margin: 1rem;
--      animation: float 3s ease-in-out infinite;
-+    .stats-row {
-+      display: flex;
-+      flex-wrap: wrap;
-+      gap: 0.8rem;
-+      margin-top: 1.2rem;
-     }
- 
--    .character.small {
--      font-size: 2rem;
-+    .tiny-stat {
-+      background: rgba(255,255,255,0.08);
-+      border: 3px solid rgba(191, 225, 255, 0.35);
-+      padding: 0.8rem 1rem;
-+      min-width: 150px;
-     }
- 
--    /* Cards e botões */
--    .card {
--      background: rgba(255, 255, 255, 0.95);
--      border-radius: 20px;
--      padding: 2rem;
--      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
--      max-width: 400px;
--      text-align: center;
--      margin-bottom: 2rem;
-+    .tiny-stat strong {
-+      display: block;
-+      font-size: 1.1rem;
-+      color: white;
-+    }
-+
-+    .tiny-stat span {
-+      font-size: 0.88rem;
-+      color: #bcd6ff;
-     }
- 
--    .btn {
--      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-+    .pixel-button {
-+      border: 4px solid #d8f0ff;
-+      background: linear-gradient(180deg, #64c0ff, #3576e1);
-       color: white;
--      border: none;
--      padding: 0.75rem 1.5rem;
--      border-radius: 25px;
-+      padding: 0.9rem 1.1rem;
-       font-size: 1rem;
--      font-weight: 600;
-+      font-weight: 700;
-       cursor: pointer;
--      margin: 0.5rem;
--      transition: all 0.3s ease;
--      display: inline-block;
-+      transition: transform 0.16s ease, filter 0.16s ease;
-     }
- 
--    .btn:hover {
--      transform: scale(1.05);
--      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-+    .pixel-button.secondary {
-+      background: linear-gradient(180deg, #8ed97d, #3b8741);
-     }
- 
--    .btn:active {
--      transform: scale(0.98);
-+    .pixel-button.gold {
-+      background: linear-gradient(180deg, #ffe58e, #d39a1c);
-+      color: #28345c;
-+      border-color: #fff2be;
-     }
- 
--    .btn-blue {
--      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-+    .pixel-button:hover {
-+      transform: translate(-2px, -2px);
-+      filter: brightness(1.05);
-     }
- 
--    .btn-green {
--      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-+    .button-row {
-+      display: flex;
-+      gap: 0.8rem;
-+      flex-wrap: wrap;
-+      margin-top: 1.3rem;
-     }
- 
--    /* Mensagens */
--    .message {
--      color: white;
--      font-size: 1.3rem;
--      font-weight: 600;
--      margin: 1rem;
--      text-align: center;
--      max-width: 600px;
-+    .pixel-letter {
-+      background: linear-gradient(180deg, rgba(255, 246, 232, 0.97), rgba(244, 229, 255, 0.97));
-+      color: #5d3b79;
-+      border: 4px solid #ffe5f0;
-+      padding: 1rem 1.1rem;
-+      margin-top: 1rem;
-+      font-style: italic;
-       line-height: 1.6;
-     }
- 
--    .message-romantic {
--      font-size: 1.1rem;
--      color: #ffd6e8;
--      margin-top: 2rem;
--      font-style: italic;
--      animation: float 2s ease-in-out infinite;
-+    .companion-stack {
-+      display: grid;
-+      gap: 0.85rem;
-     }
- 
--    /* Progress */
--    .progress-bar {
--      width: 100%;
--      height: 8px;
--      background: rgba(255, 255, 255, 0.3);
--      border-radius: 10px;
-+    .companion-bubble {
-+      background: rgba(255,255,255,0.9);
-+      color: #163567;
-+      border: 4px solid #f1f8ff;
-+      padding: 0.95rem 1rem;
-+    }
-+
-+    .bubble-header {
-+      display: flex;
-+      justify-content: space-between;
-+      gap: 0.8rem;
-+      align-items: center;
-+      font-weight: 700;
-+      margin-bottom: 0.5rem;
-+    }
-+
-+    .sprite-showcase {
-+      display: flex;
-+      gap: 1rem;
-+      flex-wrap: wrap;
-+      margin-top: 1rem;
-+      align-items: end;
-+    }
-+
-+    .sprite-card {
-+      width: 140px;
-+      padding: 1rem 0.7rem;
-+      text-align: center;
-+      background: rgba(255,255,255,0.1);
-+      border: 3px solid rgba(255,255,255,0.2);
-+    }
-+
-+    .sprite-face {
-+      width: 74px;
-+      height: 74px;
-+      margin: 0 auto 0.7rem;
-+      display: grid;
-+      place-items: center;
-+      font-size: 2.5rem;
-+      background:
-+        linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.06));
-+      border: 4px solid rgba(255,255,255,0.25);
-+    }
-+
-+    .dream-meter {
-+      margin-top: 1.2rem;
-+      background: rgba(255,255,255,0.08);
-+      border: 3px solid rgba(208, 230, 255, 0.3);
-+      padding: 0.7rem;
-+    }
-+
-+    .dream-track {
-+      height: 18px;
-+      background: rgba(255,255,255,0.12);
-       overflow: hidden;
--      margin-bottom: 2rem;
-+      position: relative;
-     }
- 
--    .progress-fill {
-+    .dream-fill {
-       height: 100%;
--      background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
--      transition: width 0.3s ease;
-+      width: 88%;
-+      background: repeating-linear-gradient(90deg, #7de6ff 0 12px, #7d9dff 12px 24px, #d2a6ff 24px 36px);
-     }
- 
--    /* Mini-games */
--    .piano-key {
--      width: 40px;
--      height: 60px;
--      background: white;
--      border: 2px solid #333;
--      border-radius: 5px;
--      margin: 5px;
--      cursor: pointer;
--      transition: all 0.1s;
--      font-weight: bold;
--      font-size: 0.8rem;
-+    .piano-grid {
-+      display: flex;
-+      gap: 0.6rem;
-+      flex-wrap: wrap;
-+      justify-content: center;
-+      margin: 1rem 0 1.2rem;
-     }
- 
--    .piano-key:hover {
--      background: #f0f0f0;
--      transform: scale(1.05);
-+    .piano-key {
-+      width: 76px;
-+      min-height: 110px;
-+      border: 4px solid #122347;
-+      background: linear-gradient(180deg, #ffffff, #ddecff);
-+      color: #17305e;
-+      font-weight: 700;
-+      cursor: pointer;
-+      padding: 0.6rem;
-+      display: flex;
-+      align-items: end;
-+      justify-content: center;
-+      transition: transform 0.12s ease, background 0.12s ease;
-     }
- 
-+    .piano-key:hover,
-     .piano-key.active {
--      background: #667eea;
-+      transform: translateY(-6px);
-+      background: linear-gradient(180deg, #7de6ff, #3779f2);
-       color: white;
-     }
- 
--    .quiz-option {
--      background: rgba(255, 255, 255, 0.9);
--      border: 3px solid transparent;
-+    .status-display {
-+      text-align: center;
-+      font-weight: 700;
-+      color: #17305e;
-+      min-height: 1.5rem;
-+      margin-bottom: 0.8rem;
-+    }
-+
-+    .sequence-chip-row,
-+    .collected-row,
-+    .heart-shards {
-+      display: flex;
-+      gap: 0.55rem;
-+      justify-content: center;
-+      flex-wrap: wrap;
-+      margin-top: 0.8rem;
-+    }
-+
-+    .chip,
-+    .food-token,
-+    .heart-fragment {
-+      padding: 0.55rem 0.8rem;
-+      font-weight: 700;
-+      background: rgba(21, 48, 101, 0.1);
-+      border: 3px solid rgba(21, 48, 101, 0.12);
-+    }
-+
-+    .quiz-grid,
-+    .choice-grid,
-+    .food-grid,
-+    .mascot-grid {
-+      display: grid;
-+      gap: 0.85rem;
-+    }
-+
-+    .quiz-option,
-+    .choice-tile,
-+    .mascot-orb,
-+    .food-token {
-+      border: 4px solid #dceeff;
-+      background: rgba(255,255,255,0.96);
-+      color: #17305e;
-       padding: 1rem;
--      margin: 0.5rem;
--      border-radius: 15px;
-       cursor: pointer;
--      transition: all 0.3s;
--      font-weight: 600;
--      max-width: 300px;
-+      text-align: left;
-+      font-weight: 700;
-+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-     }
- 
--    .quiz-option:hover {
--      border-color: #667eea;
--      transform: scale(1.02);
-+    .quiz-option:hover,
-+    .choice-tile:hover,
-+    .mascot-orb:hover,
-+    .food-token:hover {
-+      transform: translate(-2px, -2px);
-+      border-color: #62c2ff;
-     }
- 
--    .quiz-option.correct {
--      background: #43e97b;
-+    .quiz-option.correct,
-+    .choice-tile.correct,
-+    .mascot-orb.ready,
-+    .food-token.collected {
-+      background: linear-gradient(180deg, #8fe494, #49a151);
-       color: white;
--      border-color: #43e97b;
-+      border-color: #dbffd8;
-     }
- 
--    .quiz-option.wrong {
--      background: #ff6b6b;
-+    .quiz-option.wrong,
-+    .choice-tile.wrong {
-+      background: linear-gradient(180deg, #ffb5bf, #e75f6e);
-       color: white;
--      border-color: #ff6b6b;
-+      border-color: #ffdfe4;
-     }
- 
--    /* Heart */
--    .final-heart {
--      font-size: 6rem;
--      animation: pulse-heart 0.8s ease-in-out infinite;
-+    .mascot-orb {
-+      text-align: center;
-+      padding: 1.1rem 0.9rem;
-+    }
-+
-+    .orb-emoji {
-+      font-size: 2rem;
-+      display: block;
-+      margin-bottom: 0.45rem;
-     }
- 
--    .sparkle {
-+    .floating-item {
-       position: absolute;
--      width: 10px;
--      height: 10px;
--      background: #ffd6e8;
--      border-radius: 50%;
-+      font-size: 2rem;
-+      z-index: 2;
-+      animation: bob 3.4s ease-in-out infinite;
-+      opacity: 0.95;
-+    }
-+
-+    .moon-disc,
-+    .sun-disc {
-+      position: absolute;
-+      border-radius: 0;
-+      box-shadow: 0 0 0 4px rgba(255,255,255,0.15), 0 0 35px rgba(255,255,255,0.18);
-+    }
-+
-+    .moon-disc {
-+      top: 12%;
-+      right: 12%;
-+      width: 96px;
-+      height: 96px;
-+      background: linear-gradient(180deg, #f1f4ff, #a7c5ff);
-+    }
-+
-+    .sun-disc {
-+      top: 18%;
-+      right: 10%;
-+      width: 120px;
-+      height: 120px;
-+      background: linear-gradient(180deg, #fff0b0, #ffb060);
-+    }
-+
-+    .final-heart {
-+      font-size: clamp(4rem, 12vw, 7rem);
-+      text-align: center;
-+      animation: pulseHeart 1.1s ease-in-out infinite;
-+      text-shadow: 0 0 18px rgba(111, 222, 255, 0.7);
-+      margin-bottom: 0.8rem;
-+    }
-+
-+    .love-manifest {
-+      display: grid;
-+      grid-template-columns: repeat(2, minmax(0, 1fr));
-+      gap: 0.8rem;
-+      margin: 1rem 0;
-+    }
-+
-+    .manifest-card {
-+      background: rgba(255,255,255,0.08);
-+      border: 3px solid rgba(208, 228, 255, 0.18);
-+      padding: 0.8rem;
-+    }
-+
-+    .manifest-card strong {
-+      display: block;
-+      color: #fff3c6;
-+      margin-bottom: 0.25rem;
-+    }
-+
-+    .manifest-card span {
-+      color: #eaf5ff;
-+      line-height: 1.5;
-+      font-size: 0.96rem;
-+    }
-+
-+    .phase-note {
-+      margin-top: 1rem;
-+      font-size: 0.98rem;
-+      color: #d4e9ff;
-+    }
-+
-+    .hidden {
-+      display: none !important;
-+    }
-+
-+    @keyframes rainDrop {
-+      0% { transform: translateY(-10vh); opacity: 0; }
-+      10% { opacity: 1; }
-+      100% { transform: translateY(110vh); opacity: 0; }
-+    }
-+
-+    @keyframes drift {
-+      0% { transform: translateX(0); }
-+      50% { transform: translateX(18px); }
-+      100% { transform: translateX(0); }
-+    }
-+
-+    @keyframes twinkle {
-+      0%, 100% { opacity: 0.7; }
-+      50% { opacity: 1; }
-+    }
-+
-+    @keyframes bob {
-+      0%, 100% { transform: translateY(0); }
-+      50% { transform: translateY(-14px); }
-+    }
-+
-+    @keyframes glowPulse {
-+      0%, 100% { opacity: 0.75; }
-+      50% { opacity: 1; }
-+    }
-+
-+    @keyframes pulseHeart {
-+      0%, 100% { transform: scale(1); }
-+      50% { transform: scale(1.08); }
-+    }
-+
-+    @media (max-width: 980px) {
-+      body {
-+        overflow-y: auto;
-+      }
-+
-+      .scene {
-+        padding-bottom: 3rem;
-+      }
-+
-+      .scene-content,
-+      .love-manifest {
-+        grid-template-columns: 1fr;
-+      }
-+
-+      .hud {
-+        align-items: stretch;
-+      }
-+    }
-+
-+    @media (max-width: 640px) {
-+      .hud,
-+      .progress-frame,
-+      .scene {
-+        padding-left: 0.9rem;
-+        padding-right: 0.9rem;
-+      }
-+
-+      .pixel-title {
-+        width: 100%;
-+      }
-+
-+      .pixel-badge {
-+        min-width: auto;
-+        width: 100%;
-+      }
-+
-+      .piano-key {
-+        width: calc(50% - 0.4rem);
-+        min-height: 90px;
-+      }
-     }
-   </style>
--  <style>body { box-sizing: border-box; }</style>
--  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
--  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nat e o Mundo Encantado 💙</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
--  <div class="game-container" id="gameContainer"><!-- Header -->
--   <div class="p-4 flex justify-between items-center bg-black/20">
--    <div class="text-white font-bold text-xl">
--     💙 Nat e o Mundo Encantado
--    </div>
--    <div class="text-white text-lg" id="phaseInfo">
--     Fase 1/6
--    </div>
--   </div><!-- Progress -->
--   <div class="px-4">
--    <div class="progress-bar">
--     <div class="progress-fill" id="progressFill" style="width: 16.67%"></div>
--    </div>
--   </div><!-- Scenes --> <!-- Fase 1: Chuva -->
--   <div class="scene scene-rainy active" id="scene1">
--    <div class="message">
--     🌧️ Bem-vinda ao mundo encantado, Nat!
--    </div>
--    <div class="character">
--     🌧️
--    </div>
--    <div class="card">
--     <h2 class="text-2xl font-bold text-purple-600 mb-4">Primeira aventura: A Chuva</h2>
--     <p class="text-gray-700 mb-4">Você adore quando chove... Vamos começar?</p><button class="btn btn-blue" onclick="nextPhase()">Continuar ➜</button>
--    </div>
--   </div><!-- Fase 2: Piano -->
--   <div class="scene scene-library" id="scene2">
--    <div class="message">
--     🎹 Toque uma melodia mágica
--    </div>
--    <div class="character">
--     🎹
--    </div>
--    <div class="card">
--     <h2 class="text-2xl font-bold text-purple-300 mb-4">Desafio Musical</h2>
--     <div id="pianoContainer" class="flex justify-center gap-1 mb-6 flex-wrap"><!-- Teclas do piano serão geradas aqui -->
--     </div>
--     <div id="sequence" class="text-white mb-4 text-lg"></div><button class="btn btn-green" onclick="startPianoGame()">Começar Desafio</button>
--    </div>
--   </div><!-- Fase 3: Quiz -->
--   <div class="scene scene-library" id="scene3">
--    <div class="message">
--     📚 Quiz Literário
--    </div>
--    <div class="character">
--     📖
--    </div>
--    <div class="card">
--     <h2 class="text-2xl font-bold text-purple-300 mb-4">Qual é a sua casa de Hogwarts?</h2>
--     <div id="quizContainer"><!-- Opções de quiz serão geradas aqui -->
--     </div>
--    </div>
--   </div><!-- Fase 4: Coleta de sushi -->
--   <div class="scene scene-sunset" id="scene4">
--    <div class="message">
--     🍣 Colete seus petiscos favoritos!
--    </div>
--    <div class="character">
--     🍣
--    </div>
--    <div class="card">
--     <h2 class="text-2xl font-bold text-orange-600 mb-4">Hora da Diversão</h2>
--     <p class="text-gray-700 mb-4">Clique nos petiscos que você ama!</p>
--     <div id="foodContainer" class="flex justify-center gap-4 mb-6 flex-wrap"><!-- Comidas serão geradas aqui -->
--     </div>
--     <div id="foodScore" class="text-2xl font-bold text-orange-600 mb-4">
--      0/4 coletados
--     </div><button class="btn btn-blue" onclick="nextPhase()">Próxima Fase ➜</button>
--    </div>
--   </div><!-- Fase 5: Cachorrinhas Mágicas -->
--   <div class="scene scene-magical" id="scene5">
--    <div class="message">
--     🐕 Suas companheiras mágicas chegaram!
--    </div>
--    <div style="display: flex; gap: 2rem; justify-center; margin: 2rem;">
--     <div class="character small floating">
--      🐕
--     </div>
--     <div class="character small floating" style="animation-delay: 0.5s;">
--      🐕
--     </div>
--    </div>
--    <div class="card">
--     <h2 class="text-2xl font-bold text-pink-400 mb-4">Fanny e Cacau</h2>
--     <p class="text-gray-700 mb-4">Suas bolinhas de energia aparecem para ajudar na aventura final!</p><button class="btn btn-green" onclick="nextPhase()">Continuar ➜</button>
--    </div>
--   </div><!-- Fase 6: Mensagem Final -->
--   <div class="scene scene-magical" id="scene6">
--    <div class="final-heart">
--     💙
-+  <div class="game-shell">
-+   <div class="rain-field" id="rainField"></div>
-+
-+   <header class="hud">
-+    <div class="pixel-title">💙 NAT E O MUNDO ENCANTADO</div>
-+    <div class="pixel-badge">
-+      <div class="hud-label">Capítulo atual</div>
-+      <div class="hud-value" id="phaseInfo">Fase 1/7 · Portal da Chuva</div>
-     </div>
--    <div class="card">
--     <h2 class="text-3xl font-bold text-purple-600 mb-4">Feliz 4 meses, Nat! 🎉</h2>
--     <div class="message-romantic">
--      "Você reuniu tudo que ama nesta aventura porque você É meu mundo encantado.<br><br>
--       Sua chuva quando você está triste, seu sushi que você devora com felicidade, sua música que toca meu coração, seus livros que te transportam, suas cachorrinhas que trazem alegria, e você... sempre você.<br><br>
--       Obrigado por cada dia ao seu lado. 💙"
--     </div><button class="btn btn-blue" onclick="restartGame()" style="margin-top: 2rem;">Jogar Novamente 🎮</button>
-+   </header>
-+
-+   <div class="progress-frame">
-+    <div class="progress-track">
-+      <div class="progress-fill" id="progressFill"></div>
-     </div>
+       <div class="game-shell">
+      <header class="hud">
+        <div class="pixel-title">
+          <span>Nat e o Mundo Encantado</span>
+          <small>Uma aventura azul em 7 capítulos</small>
+        </div>
+
+        <div class="hud-status">
+          <div class="pixel-badge">
+            <span class="hud-label">Capítulo</span>
+            <strong class="hud-value" id="chapterLabel">01 · Chegada na Chuva</strong>
+          </div>
+          <div class="pixel-badge">
+            <span class="hud-label">Energia Encantada</span>
+            <strong class="hud-value" id="energyCount">0 / 12</strong>
+          </div>
+          <div class="pixel-badge">
+            <span class="hud-label">Cartas Reveladas</span>
+            <strong class="hud-value" id="lettersCount">0 / 6</strong>
+          </div>
+        </div>
+      </header>
+
+      <div class="progress-frame" aria-label="Progresso da jornada">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <main id="sceneContainer">
+        <section class="scene active" data-scene="intro">
+          <div class="backdrop rainy">
+            <div class="rain-layer"></div>
+            <div class="cloud cloud-a"></div>
+            <div class="cloud cloud-b"></div>
+            <div class="city-layer"></div>
+          </div>
+
+          <div class="scene-grid intro-grid">
+            <div class="pixel-panel hero-panel">
+              <span class="panel-kicker">Capítulo 01 · Chegada na Chuva</span>
+              <h1>Fogoio desperta no mundo encantado.</h1>
+              <p>
+                Em uma tarde chuvosa azulada, Nat encontra um portal pixelado para um reino feito de
+                livros, música, cochilos mágicos e pequenos milagres românticos.
+              </p>
+              <ul class="feature-list">
+                <li>Explore cenários mágicos com visual pixel-art detalhado.</li>
+                <li>Resolva puzzles com Darwin e receba dicas da BMO.</li>
+                <li>Encontre cartas digitais escondidas em cada fase.</li>
+              </ul>
+              <div class="button-row">
+                <button class="pixel-button primary" data-action="next-scene">Começar jornada</button>
+                <button class="pixel-button secondary" data-action="show-help">Como jogar</button>
+              </div>
+            </div>
+
+            <div class="hero-showcase">
+              <div class="character-card pixel-card">
+                <div class="nat-sprite" aria-hidden="true">
+                  <span class="hair"></span>
+                  <span class="face"></span>
+                  <span class="body"></span>
+                  <span class="glow"></span>
+                </div>
+                <div>
+                  <h2>Nat · “Fogoio”</h2>
+                  <p>
+                    Guardiã da luz tranquila e do sono brilhante. Seu poder especial é transformar sonhos
+                    em estrelas azuis.
+                  </p>
+                </div>
+              </div>
+
+              <div class="companions-row">
+                <article class="companion-bubble">
+                  <strong>Darwin</strong>
+                  <p>Ajuda nos puzzles e sempre solta uma piada boa na hora certa.</p>
+                </article>
+                <article class="companion-bubble">
+                  <strong>BMO</strong>
+                  <p>Guia musical-tech com dicas, sons fofos e alertas do coração azul.</p>
+                </article>
+                <article class="companion-bubble">
+                  <strong>Fanny &amp; Cacau</strong>
+                  <p>Duas bolinhas de energia que giram em volta da Nat durante a aventura.</p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="scene" data-scene="hogwarts">
+          <div class="backdrop library">
+            <div class="bookshelf-layer"></div>
+            <div class="floating-particles"></div>
+          </div>
+
+          <div class="scene-grid two-columns">
+            <div class="pixel-panel">
+              <span class="panel-kicker">Capítulo 02 · Biblioteca das Casas</span>
+              <h2>Qual magia Nat vai vestir primeiro?</h2>
+              <p>
+                Os livros de Hogwarts se abrem e perguntam se o coração dela quer a astúcia de Sonserina
+                ou a coragem de Grifinória. A escolha muda só o clima da cena — o romance continua igual.
+              </p>
+              <div class="choice-grid" id="houseChoices">
+                <button class="choice-tile" data-house="sonserina">
+                  <strong>Sonserina</strong>
+                  <span>Verde profundo, dourado e estratégia encantada.</span>
+                </button>
+                <button class="choice-tile" data-house="grifinoria">
+                  <strong>Grifinória</strong>
+                  <span>Vermelho-dourado, coragem e brilho de aventura.</span>
+                </button>
+              </div>
+              <div class="letter-box pixel-letter hidden" id="houseLetter"></div>
+              <button class="pixel-button primary hidden" id="houseContinue" data-action="next-scene">Abrir sala da música</button>
+            </div>
+
+            <aside class="pixel-panel side-panel">
+              <h3>Companheiros da fase</h3>
+              <div class="side-stack">
+                <div class="speech-card">
+                  <span>Darwin</span>
+                  <p>“Se pintar dúvida, escolhe com o coração. Puzzle bom é puzzle com estilo!”</p>
+                </div>
+                <div class="speech-card">
+                  <span>BMO</span>
+                  <p>“Salvei uma carta romântica secreta assim que você escolher.”</p>
+                </div>
+                <div class="speech-card banana-card">
+                  <span>Banana</span>
+                  <p>“Se tiver intervalo, eu aceito sushi. Ou sorvete. Ou os dois.”</p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="scene" data-scene="piano">
+          <div class="backdrop sunset">
+            <div class="sun-disc"></div>
+            <div class="mountain-layer"></div>
+            <div class="lake-layer"></div>
+          </div>
+
+          <div class="scene-grid two-columns">
+            <div class="pixel-panel">
+              <span class="panel-kicker">Capítulo 03 · Piano do Pôr do Sol</span>
+              <h2>Toque a sequência que BMO encontrou nas estrelas.</h2>
+              <p>
+                Repita a melodia <strong id="pianoPattern">SOL · MI · DO · RÉ</strong> clicando nas teclas.
+                Cada acerto ilumina o lago e revela mais um recado bonito.
+              </p>
+              <div class="piano-board" id="pianoBoard">
+                <button class="piano-key" data-note="DO">DO</button>
+                <button class="piano-key" data-note="RE">RÉ</button>
+                <button class="piano-key" data-note="MI">MI</button>
+                <button class="piano-key" data-note="FA">FA</button>
+                <button class="piano-key" data-note="SOL">SOL</button>
+              </div>
+              <p class="status-text" id="pianoStatus">BMO: “Respira, sente o ritmo e deixa a magia acontecer.”</p>
+              <div class="letter-box pixel-letter hidden" id="pianoLetter"></div>
+              <button class="pixel-button primary hidden" id="pianoContinue" data-action="next-scene">Seguir para o quiz literário</button>
+            </div>
+
+            <aside class="pixel-panel side-panel">
+              <h3>Power-ups musicais</h3>
+              <div class="music-orbs">
+                <div class="floating-item note-cyan"></div>
+                <div class="floating-item note-gold"></div>
+                <div class="floating-item note-green"></div>
+              </div>
+              <p>
+                Quando Nat acerta a melodia, Fanny e Cacau giram mais rápido e transformam o som em energia.
+              </p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="scene" data-scene="quiz">
+          <div class="backdrop library alt"></div>
+          <div class="scene-grid two-columns">
+            <div class="pixel-panel">
+              <span class="panel-kicker">Capítulo 04 · Quiz do Ministério dos Livros</span>
+              <h2>Responda para abrir a próxima estante secreta.</h2>
+              <div id="quizContainer" class="quiz-box"></div>
+              <p class="status-text" id="quizStatus">Nat adora ler, então esse portal é puro charme literário.</p>
+              <div class="letter-box pixel-letter hidden" id="quizLetter"></div>
+              <button class="pixel-button primary hidden" id="quizContinue" data-action="next-scene">Ir caçar comidinhas mágicas</button>
+            </div>
+
+            <aside class="pixel-panel side-panel">
+              <h3>Itens raros da biblioteca</h3>
+              <ul class="feature-list compact">
+                <li>Livros que brilham quando alguém fala de romance.</li>
+                <li>Prateleiras que mudam de cor com chuva do lado de fora.</li>
+                <li>Um cantinho secreto perfeito para cochilos encantados.</li>
+              </ul>
+            </aside>
+          </div>
+        </section>
+
+        <section class="scene" data-scene="food">
+          <div class="backdrop rainy food-bg">
+            <div class="rain-layer dense"></div>
+            <div class="market-layer"></div>
+          </div>
+
+          <div class="scene-grid two-columns">
+            <div class="pixel-panel">
+              <span class="panel-kicker">Capítulo 05 · Feira dos Sabores Favoritos</span>
+              <h2>Colete 4 delícias para carregar o coração azul.</h2>
+              <p>
+                Clique nas comidinhas favoritas da Nat para transformar sabor em energia romântica.
+              </p>
+              <div class="food-grid" id="foodGrid">
+                <button class="food-token" data-food="sushi">🍣<span>Sushi</span></button>
+                <button class="food-token" data-food="iogurte">🥣<span>Iogurte</span></button>
+                <button class="food-token" data-food="baunilha">🍨<span>Baunilha</span></button>
+                <button class="food-token" data-food="limao">🍋<span>Limão</span></button>
+                <button class="food-token" data-food="estrela">⭐<span>Bônus</span></button>
+              </div>
+              <p class="status-text" id="foodStatus">Banana: “Juro que só vou provar um pedacinho...”</p>
+              <div class="letter-box pixel-letter hidden" id="foodLetter"></div>
+              <button class="pixel-button primary hidden" id="foodContinue" data-action="next-scene">Abrir a fase da lua cheia</button>
+            </div>
+
+            <aside class="pixel-panel side-panel">
+              <h3>Contador da barriguinha feliz</h3>
+              <div class="mascot-row">
+                <div class="mascot-orb fanny"></div>
+                <div class="mascot-orb cacau"></div>
+              </div>
+              <p>
+                Cada item coletado chama um brilho novo no cenário. O bônus dá energia extra, mas não é obrigatório.
+              </p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="scene" data-scene="moon">
+          <div class="backdrop moon">
+            <div class="moon-disc"></div>
+            <div class="stars-layer"></div>
+            <div class="field-layer"></div>
+          </div>
+
+          <div class="scene-grid two-columns">
+            <div class="pixel-panel">
+              <span class="panel-kicker">Capítulo 06 · Lua Cheia da Marina</span>
+              <h2>Acenda a noite inteira com lembranças favoritas.</h2>
+              <p>
+                Escolha os três símbolos que melhor resumem o mundo encantado da Nat. Quando acertar, a lua vira trilha sonora.
+              </p>
+              <div class="choice-grid moon-grid" id="moonChoices">
+                <button class="choice-tile moon-tile" data-moon="chuva">🌧️<strong>Chuva</strong></button>
+                <button class="choice-tile moon-tile" data-moon="livros">📚<strong>Livros</strong></button>
+                <button class="choice-tile moon-tile" data-moon="musica">🎹<strong>Música</strong></button>
+                <button class="choice-tile moon-tile" data-moon="trofeu">🏆<strong>Troféu</strong></button>
+                <button class="choice-tile moon-tile" data-moon="cachorrinhas">🐶<strong>Cachorrinhas</strong></button>
+              </div>
+              <p class="status-text" id="moonStatus">BMO: “Tem uma canção inspirada em lua cheia só esperando sua combinação.”</p>
+              <div class="letter-box pixel-letter hidden" id="moonLetter"></div>
+              <button class="pixel-button primary hidden" id="moonContinue" data-action="next-scene">Formar o coração azul</button>
+            </div>
+
+            <aside class="pixel-panel side-panel">
+              <h3>Clima da fase</h3>
+              <p>
+                Uma noite azul-violeta, gotas brilhando no campo e a sensação de que toda lembrança boa virou constelação.
+              </p>
+              <div class="audio-visualizer" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="scene" data-scene="finale">
+          <div class="backdrop finale">
+            <div class="heart-aura"></div>
+            <div class="stars-layer dense"></div>
+          </div>
+
+          <div class="scene-grid finale-grid">
+            <div class="pixel-panel finale-panel">
+              <span class="panel-kicker">Capítulo 07 · Coração Azul Brilhante</span>
+              <div class="heart-core" id="heartCore">
+                <div class="heart-shape"></div>
+              </div>
+              <h2>Todos os elementos se uniram.</h2>
+              <p>
+                Chuva, sushi, música, cachorrinhas, livros, humor e carinho agora giram em volta de um mesmo brilho.
+              </p>
+              <div class="final-message" id="finalMessage">
+                Feliz 4 meses, Nat. Você é meu mundo encantado.
+              </div>
+              <div class="letters-summary" id="lettersSummary"></div>
+              <button class="pixel-button primary" data-action="restart">Jogar de novo</button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <dialog class="help-dialog" id="helpDialog">
+        <div class="pixel-panel dialog-panel">
+          <h2>Como jogar</h2>
+          <ul class="feature-list compact">
+            <li>Avance capítulo por capítulo usando os botões principais.</li>
+            <li>Faça as interações de cada fase para liberar cartas românticas.</li>
+            <li>O coração azul final fica mais forte quanto mais energia você juntar.</li>
+          </ul>
+          <button class="pixel-button primary" id="closeHelp">Entendi 💙</button>
+        </div>
+      </dialog>
     </div>
-+
-+   <main>
-+    <section class="scene active" id="scene1">
-+      <div class="backdrop rainy">
-+        <div class="cloud-layer"></div>
-+        <div class="city-layer"></div>
-+        <div class="grass-layer"></div>
-+        <div class="magic-layer"></div>
-+        <div class="floating-item" style="left:12%; top:16%;">☔</div>
-+        <div class="floating-item" style="left:85%; top:24%; animation-delay:.8s;">💤</div>
-+        <div class="floating-item" style="left:72%; top:70%; animation-delay:1.2s;">✨</div>
-+      </div>
-+      <div class="scene-content">
-+        <div class="pixel-panel">
-+          <div class="scene-kicker">🌧️ introdução pixelada</div>
-+          <h1 class="scene-title">Transformei o prompt em um conto jogável, azul, mágico e romântico.</h1>
-+          <p class="scene-description">
-+            Nat entra no mapa como <strong>Fogoio</strong>: cachos volumosos, energia luminosa e um superpoder raro — acalmar o mundo com luz e sono. A cidade está chuvosa, as nuvens brilham em azul, e cada fase guarda uma carta digital sua.
-+          </p>
-+          <div class="stats-row">
-+            <div class="tiny-stat"><strong>Cor principal</strong><span>Azuis brilhantes com verde e dourado Sonserina</span></div>
-+            <div class="tiny-stat"><strong>Tom visual</strong><span>Pixel art detalhado + cartoon fofo</span></div>
-+            <div class="tiny-stat"><strong>Missão</strong><span>Montar um coração azul encantado</span></div>
-+          </div>
-+          <div class="dream-meter">
-+            <div class="hud-label">Energia do soninho mágico</div>
-+            <div class="dream-track"><div class="dream-fill"></div></div>
-+          </div>
-+          <div class="button-row">
-+            <button class="pixel-button" onclick="nextPhase()">Começar aventura ➜</button>
-+          </div>
-+          <div class="pixel-letter">
-+            “Cada detalhe aqui foi pensado pra parecer um lugar onde você pisaria sorrindo: chuva leve, biblioteca misteriosa, por do sol quentinho, músicas fofas e um final com coração azul brilhando só pra você.”
-+          </div>
-+        </div>
-+        <div class="pixel-card">
-+          <h2 class="text-2xl font-bold mb-4">Elenco da aventura</h2>
-+          <div class="sprite-showcase">
-+            <div class="sprite-card">
-+              <div class="sprite-face">💙</div>
-+              <strong>Nat</strong>
-+              <div>Heroína luminosa e dorminhoca.</div>
-+            </div>
-+            <div class="sprite-card">
-+              <div class="sprite-face">🐟</div>
-+              <strong>Darwin</strong>
-+              <div>Parceiro de puzzles e risadas.</div>
-+            </div>
-+            <div class="sprite-card">
-+              <div class="sprite-face">🎮</div>
-+              <strong>BMO</strong>
-+              <div>Guia musical e tecnológico.</div>
-+            </div>
-+            <div class="sprite-card">
-+              <div class="sprite-face">🐶</div>
-+              <strong>Fanny + Cacau</strong>
-+              <div>Duas bolinhas mágicas de energia.</div>
-+            </div>
-+          </div>
-+          <div class="companion-stack mt-4">
-+            <div class="companion-bubble">
-+              <div class="bubble-header"><span>📟 BMO</span><span>tutorial</span></div>
-+              <div>“Nat, hoje a fase é especial: chuva + livros + música + comida favorita = combo perfeito.”</div>
-+            </div>
-+            <div class="companion-bubble">
-+              <div class="bubble-header"><span>🐟 Darwin</span><span>dica</span></div>
-+              <div>“Sempre que você acertar um desafio, uma carta romântica vai aparecer. Sim, eu conferi!”</div>
-+            </div>
-+          </div>
-+        </div>
-+      </div>
-+    </section>
-+
-+    <section class="scene" id="scene2">
-+      <div class="backdrop library">
-+        <div class="shelf-layer"></div>
-+        <div class="magic-layer"></div>
-+        <div class="floating-item" style="left:10%; top:20%;">📚</div>
-+        <div class="floating-item" style="left:78%; top:18%; animation-delay:1s;">🎹</div>
-+        <div class="floating-item" style="left:82%; top:72%; animation-delay:1.8s;">🪄</div>
-+      </div>
-+      <div class="scene-content">
-+        <div class="pixel-panel">
-+          <div class="scene-kicker">🎹 minigame musical</div>
-+          <h2 class="scene-title">Biblioteca de Hogwarts + piano encantado.</h2>
-+          <p class="scene-description">
-+            BMO ligou o teclado mágico. Toque a sequência correta para abrir um corredor escondido cheio de livros, feitiços e referências da sua Sonserina favorita — sem esquecer um mini brilho Grifinória para o Harry.
-+          </p>
-+          <div class="companion-stack mt-4">
-+            <div class="companion-bubble">
-+              <div class="bubble-header"><span>🎮 BMO</span><span>objetivo</span></div>
-+              <div>Reproduza a melodia <strong>LUA</strong> com 3 notas. Cada acerto faz o cenário pulsar em azul.</div>
-+            </div>
-+          </div>
-+        </div>
-+        <div class="pixel-card">
-+          <h3 class="text-2xl font-bold mb-3">Desafio do piano</h3>
-+          <div class="status-display" id="sequenceStatus">Clique em “Tocar sequência” e memorize a melodia.</div>
-+          <div class="sequence-chip-row" id="sequencePreview"></div>
-+          <div class="piano-grid" id="pianoContainer"></div>
-+          <div class="button-row justify-center">
-+            <button class="pixel-button secondary" onclick="startPianoGame()">Tocar sequência</button>
-+          </div>
-+          <div class="pixel-letter hidden" id="phaseLetter2"></div>
-+        </div>
-+      </div>
-+    </section>
-+
-+    <section class="scene" id="scene3">
-+      <div class="backdrop library">
-+        <div class="shelf-layer"></div>
-+        <div class="magic-layer"></div>
-+        <div class="floating-item" style="left:14%; top:20%;">🪶</div>
-+        <div class="floating-item" style="left:82%; top:20%; animation-delay:1.1s;">📜</div>
-+      </div>
-+      <div class="scene-content">
-+        <div class="pixel-panel">
-+          <div class="scene-kicker">📚 quiz do ministério</div>
-+          <h2 class="scene-title">Qual energia combina com a Nat nessa jornada?</h2>
-+          <p class="scene-description">
-+            O ministério literário do mundo encantado deixou uma pergunta carinhosa: a Nat pode amar Sonserina e ainda carregar a coragem luminosa da Grifinória. Aqui, a resposta certa celebra as duas referências de um jeito fofo e fiel ao roteiro.
-+          </p>
-+          <div class="phase-note">Dica: a melhor alternativa junta a astúcia verde-dourada com o coração de aventura.</div>
-+        </div>
-+        <div class="pixel-card">
-+          <h3 class="text-2xl font-bold mb-3">Quiz literário</h3>
-+          <div class="quiz-grid" id="quizContainer"></div>
-+          <div class="pixel-letter hidden" id="phaseLetter3"></div>
-+        </div>
-+      </div>
-+    </section>
-+
-+    <section class="scene" id="scene4">
-+      <div class="backdrop sunset">
-+        <div class="sun-disc"></div>
-+        <div class="city-layer" style="opacity:.4;"></div>
-+        <div class="grass-layer"></div>
-+        <div class="magic-layer"></div>
-+        <div class="floating-item" style="left:12%; top:16%;">🌇</div>
-+        <div class="floating-item" style="left:78%; top:25%; animation-delay:1.2s;">🍌</div>
-+        <div class="floating-item" style="left:68%; top:72%; animation-delay:1.9s;">🤣</div>
-+      </div>
-+      <div class="scene-content">
-+        <div class="pixel-panel">
-+          <div class="scene-kicker">🗺️ exploração narrativa</div>
-+          <h2 class="scene-title">Escolha o próximo cenário encantado da Nat.</h2>
-+          <p class="scene-description">
-+            Darwin encontrou três portais: um para a chuva calma, outro para a biblioteca misteriosa e outro para o pôr do sol dourado. A melhor rota é a que mistura tudo isso, porque a jornada dela é feita de contrastes lindos e pequenos comfortos.
-+          </p>
-+          <div class="companion-bubble mt-4">
-+            <div class="bubble-header"><span>🍌 Banana</span><span>easter egg</span></div>
-+            <div>“Se escolher só banana eu protesto! Cadê o sushi? Cadê o drama cinematográfico?!”</div>
-+          </div>
-+        </div>
-+        <div class="pixel-card">
-+          <h3 class="text-2xl font-bold mb-3">Portal perfeito</h3>
-+          <div class="choice-grid" id="choiceContainer"></div>
-+          <div class="pixel-letter hidden" id="phaseLetter4"></div>
-+        </div>
-+      </div>
-+    </section>
-+
-+    <section class="scene" id="scene5">
-+      <div class="backdrop moon">
-+        <div class="moon-disc"></div>
-+        <div class="star-layer"></div>
-+        <div class="grass-layer"></div>
-+        <div class="magic-layer"></div>
-+        <div class="floating-item" style="left:12%; top:16%;">🌕</div>
-+        <div class="floating-item" style="left:82%; top:18%; animation-delay:.7s;">🎤</div>
-+        <div class="floating-item" style="left:74%; top:72%; animation-delay:1.5s;">💫</div>
-+      </div>
-+      <div class="scene-content">
-+        <div class="pixel-panel">
-+          <div class="scene-kicker">🌕 lua cheia musical</div>
-+          <h2 class="scene-title">Noite inspirada em “Lua Cheia”.</h2>
-+          <p class="scene-description">
-+            A trilha aqui vira um respiro romântico: céu noturno, brilhos suaves, piano leve e uma atmosfera inspirada em Marina Sena. Colete os sabores favoritos da Nat para manter a energia dessa fase acesa.
-+          </p>
-+          <div class="phase-note">Colete sushi, iogurte, sorvete de baunilha e limão para desbloquear a próxima carta.</div>
-+        </div>
-+        <div class="pixel-card">
-+          <h3 class="text-2xl font-bold mb-3">Itens de conforto</h3>
-+          <div class="food-grid" id="foodContainer"></div>
-+          <div class="collected-row" id="foodScore"></div>
-+          <div class="pixel-letter hidden" id="phaseLetter5"></div>
-+        </div>
-+      </div>
-+    </section>
-+
-+    <section class="scene" id="scene6">
-+      <div class="backdrop finale">
-+        <div class="star-layer"></div>
-+        <div class="grass-layer"></div>
-+        <div class="magic-layer"></div>
-+        <div class="floating-item" style="left:10%; top:18%;">🐶</div>
-+        <div class="floating-item" style="left:84%; top:22%; animation-delay:.8s;">🐶</div>
-+        <div class="floating-item" style="left:72%; top:74%; animation-delay:1.5s;">💎</div>
-+      </div>
-+      <div class="scene-content">
-+        <div class="pixel-panel">
-+          <div class="scene-kicker">🐾 companheiras mágicas</div>
-+          <h2 class="scene-title">Fanny e Cacau viraram bolinhas de energia.</h2>
-+          <p class="scene-description">
-+            Toque nas mascotes para carregar fragmentos do coração azul. Quando as três cargas estiverem prontas, o amor final do mapa aparece. Elas são o reforço mais fofo da aventura inteira.
-+          </p>
-+        </div>
-+        <div class="pixel-card">
-+          <h3 class="text-2xl font-bold mb-3">Carga do coração</h3>
-+          <div class="mascot-grid" id="mascotContainer"></div>
-+          <div class="heart-shards" id="heartStatus"></div>
-+          <div class="pixel-letter hidden" id="phaseLetter6"></div>
-+        </div>
-+      </div>
-+    </section>
-+
-+    <section class="scene" id="scene7">
-+      <div class="backdrop finale">
-+        <div class="star-layer"></div>
-+        <div class="magic-layer"></div>
-+        <div class="floating-item" style="left:12%; top:20%;">💙</div>
-+        <div class="floating-item" style="left:80%; top:18%; animation-delay:.8s;">✨</div>
-+        <div class="floating-item" style="left:68%; top:72%; animation-delay:1.6s;">📖</div>
-+      </div>
-+      <div class="scene-content">
-+        <div class="pixel-panel">
-+          <div class="scene-kicker">💌 final romântico</div>
-+          <h2 class="scene-title">O coração azul brilhante foi formado.</h2>
-+          <p class="scene-description">
-+            Chuva, livros, música, lua cheia, sushi, humor bobo, as cachorrinhas e toda a delicadeza da Nat agora viraram um único símbolo. O mundo encantado termina, mas deixa uma carta que pode ser relida sempre.
-+          </p>
-+          <div class="love-manifest">
-+            <div class="manifest-card"><strong>🌧️ Chuva</strong><span>Conforto, calma e abraços demorados.</span></div>
-+            <div class="manifest-card"><strong>📚 Livros</strong><span>Portais secretos para mil universos.</span></div>
-+            <div class="manifest-card"><strong>🎹 Música</strong><span>Piano, notas doces e lembranças.</span></div>
-+            <div class="manifest-card"><strong>🐶 Mascotes</strong><span>Fanny e Cacau guardando a fase final.</span></div>
-+          </div>
-+        </div>
-+        <div class="pixel-card">
-+          <div class="final-heart">💙</div>
-+          <h3 class="text-3xl font-bold text-center mb-4">Feliz 4 meses, Nat.</h3>
-+          <p class="text-lg leading-8 text-center mb-4">
-+            Você é meu mundo encantado.
-+          </p>
-+          <div class="pixel-letter" style="display:block; margin-top:0;">
-+            “Eu quis pegar tudo o que você ama e transformar em fase, cor, chuva, trilha, carinho e brilho. Se esse jogo parece mágico, é porque ele tenta acompanhar só um pedacinho do que você faz eu sentir. Obrigado por existir do seu jeitinho: linda, divertida, intensa, leitora, musical, dorminhoca e absolutamente inesquecível.”
-+          </div>
-+          <div class="button-row justify-center">
-+            <button class="pixel-button gold" onclick="restartGame()">Jogar de novo 🎮</button>
-+          </div>
-+        </div>
-+      </div>
-+    </section>
-+   </main>
-   </div>
-+
-   <script>
-+    const phaseMeta = [
-+      'Fase 1/7 · Portal da Chuva',
-+      'Fase 2/7 · Piano Encantado',
-+      'Fase 3/7 · Quiz Literário',
-+      'Fase 4/7 · Escolha do Cenário',
-+      'Fase 5/7 · Lua Cheia & Comfort Food',
-+      'Fase 6/7 · Fanny + Cacau Power Up',
-+      'Fase 7/7 · Coração Azul Final'
-+    ];
-+
-     let currentPhase = 1;
--    const totalPhases = 6;
--    let pianoSequence = [];
--    let userSequence = [];
--    let foodCollected = 0;
--    const foodTarget = 4;
-+    const totalPhases = phaseMeta.length;
- 
--    // Criar raindrops ao carregar
--    function createRain() {
--      for (let i = 0; i < 20; i++) {
--        const raindrop = document.createElement('div');
--        raindrop.className = 'raindrop';
--        raindrop.style.setProperty('--x', Math.random() * 100 + '%');
--        raindrop.style.animationDelay = Math.random() * 1.5 + 's';
--        document.body.appendChild(raindrop);
--      }
--    }
-+    const pianoNotes = [
-+      { label: 'Do', icon: '🌙' },
-+      { label: 'Mi', icon: '💙' },
-+      { label: 'Sol', icon: '✨' },
-+      { label: 'La', icon: '🌧️' }
-+    ];
-+    const targetPianoSequence = [0, 2, 1];
-+    let userPianoSequence = [];
- 
--    function nextPhase() {
--      currentPhase++;
--      if (currentPhase > totalPhases) {
--        currentPhase = totalPhases;
-+    let foodCollected = [];
-+    const foods = [
-+      { emoji: '🍣', name: 'Sushi' },
-+      { emoji: '🥣', name: 'Iogurte' },
-+      { emoji: '🍦', name: 'Sorvete de baunilha' },
-+      { emoji: '🍋', name: 'Limão' }
-+    ];
-+
-+    let mascotCharge = 0;
-+    const mascotOrbs = [
-+      { emoji: '🐶', title: 'Fanny', text: 'Escudo fofo que protege a carta final.' },
-+      { emoji: '🐾', title: 'Cacau', text: 'Sprint mágico cheio de energia.' },
-+      { emoji: '💫', title: 'Laço Azul', text: 'Une tudo que a Nat ama em um brilho só.' }
-+    ];
-+
-+    function createRain() {
-+      const rainField = document.getElementById('rainField');
-+      rainField.innerHTML = '';
-+      for (let i = 0; i < 40; i++) {
-+        const drop = document.createElement('span');
-+        drop.className = 'raindrop';
-+        drop.style.setProperty('--x', Math.random() * 100 + '%');
-+        drop.style.setProperty('--speed', (1.1 + Math.random() * 1.4) + 's');
-+        drop.style.setProperty('--delay', (Math.random() * 1.6) + 's');
-+        rainField.appendChild(drop);
-       }
--      updateScene();
-     }
- 
-     function updateScene() {
--      // Esconder todas as cenas
--      document.querySelectorAll('.scene').forEach(scene => {
--        scene.classList.remove('active');
--      });
--
--      // Mostrar a cena atual
--      const currentScene = document.getElementById(`scene${currentPhase}`);
--      if (currentScene) {
--        currentScene.classList.add('active');
--      }
-+      document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
-+      const activeScene = document.getElementById(`scene${currentPhase}`);
-+      if (activeScene) activeScene.classList.add('active');
- 
--      // Atualizar progress
-       const progress = (currentPhase / totalPhases) * 100;
-       document.getElementById('progressFill').style.width = progress + '%';
--      document.getElementById('phaseInfo').textContent = `Fase ${currentPhase}/${totalPhases}`;
--
--      // Inicializar conteúdo específico
--      if (currentPhase === 2) {
--        initPiano();
--      } else if (currentPhase === 3) {
--        initQuiz();
--      } else if (currentPhase === 4) {
--        initFood();
--      }
-+      document.getElementById('phaseInfo').textContent = phaseMeta[currentPhase - 1];
- 
--      // Chamar lucide para atualizar ícones
--      lucide.createIcons();
-+      if (currentPhase === 2) initPiano();
-+      if (currentPhase === 3) initQuiz();
-+      if (currentPhase === 4) initChoices();
-+      if (currentPhase === 5) initFood();
-+      if (currentPhase === 6) initMascots();
-+    }
-+
-+    function nextPhase() {
-+      currentPhase = Math.min(totalPhases, currentPhase + 1);
-+      updateScene();
-+    }
-+
-+    function restartGame() {
-+      currentPhase = 1;
-+      userPianoSequence = [];
-+      foodCollected = [];
-+      mascotCharge = 0;
-+      document.querySelectorAll('.pixel-letter').forEach(el => {
-+        el.classList.add('hidden');
-+        el.textContent = '';
-+      });
-+      updateScene();
-     }
- 
-     function initPiano() {
-       const container = document.getElementById('pianoContainer');
-+      const preview = document.getElementById('sequencePreview');
-+      const status = document.getElementById('sequenceStatus');
-+      const letter = document.getElementById('phaseLetter2');
-+      userPianoSequence = [];
-+      letter.classList.add('hidden');
-+      letter.textContent = '';
-+      preview.innerHTML = targetPianoSequence.map(() => '<div class="chip">?</div>').join('');
-+      status.textContent = 'Clique em “Tocar sequência” e memorize a melodia.';
-+
-       container.innerHTML = '';
--      const notes = ['Do', 'Re', 'Mi', 'Fa', 'Sol'];
--      notes.forEach((note, index) => {
-+      pianoNotes.forEach((note, index) => {
-         const key = document.createElement('button');
-         key.className = 'piano-key';
--        key.textContent = note;
-+        key.innerHTML = `<div><div style="font-size:1.5rem; margin-bottom:0.4rem;">${note.icon}</div>${note.label}</div>`;
-         key.onclick = () => selectPianoKey(index, key);
-         container.appendChild(key);
-       });
-     }
- 
-     function startPianoGame() {
--      pianoSequence = [Math.floor(Math.random() * 5)];
--      userSequence = [];
--      playSequence();
--    }
-+      const preview = document.getElementById('sequencePreview');
-+      const status = document.getElementById('sequenceStatus');
-+      userPianoSequence = [];
-+      status.textContent = 'Observe: Lua, brilho, coração.';
-+      preview.innerHTML = '';
- 
--    function playSequence() {
--      document.getElementById('sequence').textContent = 'Assista a sequência...';
--      let delay = 0;
--      pianoSequence.forEach((index, i) => {
-+      targetPianoSequence.forEach((noteIndex, step) => {
-+        const chip = document.createElement('div');
-+        chip.className = 'chip';
-+        chip.textContent = `${step + 1}. ${pianoNotes[noteIndex].icon}`;
-+        preview.appendChild(chip);
-+      });
-+
-+      const keys = document.querySelectorAll('.piano-key');
-+      targetPianoSequence.forEach((noteIndex, step) => {
-         setTimeout(() => {
--          const keys = document.querySelectorAll('.piano-key');
--          keys[index].classList.add('active');
--          setTimeout(() => {
--            keys[index].classList.remove('active');
--          }, 300);
--        }, delay);
--        delay += 600;
-+          keys[noteIndex].classList.add('active');
-+          setTimeout(() => keys[noteIndex].classList.remove('active'), 280);
-+        }, step * 500);
-       });
-+
-       setTimeout(() => {
--        document.getElementById('sequence').textContent = 'Agora é sua vez!';
--      }, delay);
-+        status.textContent = 'Sua vez: repita a sequência.';
-+      }, targetPianoSequence.length * 520);
-     }
- 
-     function selectPianoKey(index, element) {
--      userSequence.push(index);
-+      if (currentPhase !== 2) return;
-+      const status = document.getElementById('sequenceStatus');
-+      const letter = document.getElementById('phaseLetter2');
-       element.classList.add('active');
--      setTimeout(() => {
--        element.classList.remove('active');
--      }, 300);
-+      setTimeout(() => element.classList.remove('active'), 200);
- 
--      if (userSequence[userSequence.length - 1] !== pianoSequence[userSequence.length - 1]) {
--        document.getElementById('sequence').textContent = '❌ Errou! Tente novamente';
--        userSequence = [];
-+      userPianoSequence.push(index);
-+      const currentIndex = userPianoSequence.length - 1;
-+      if (targetPianoSequence[currentIndex] !== index) {
-+        status.textContent = 'Ops! A melodia escapou. Tente ouvir de novo. 💫';
-+        userPianoSequence = [];
-         return;
-       }
- 
--      if (userSequence.length === pianoSequence.length) {
--        document.getElementById('sequence').textContent = '✅ Perfeito! Você desbloqueou um segredo musical!';
--        setTimeout(() => {
--          nextPhase();
--        }, 1500);
-+      if (userPianoSequence.length === targetPianoSequence.length) {
-+        status.textContent = 'Perfeito! Você abriu uma carta na biblioteca secreta. 📖';
-+        letter.textContent = 'Carta 1: Seu jeito de transformar silêncio em aconchego merece um piano inteiro tocando baixinho só para você.';
-+        letter.classList.remove('hidden');
-+        setTimeout(nextPhase, 1600);
-       }
-     }
- 
-     function initQuiz() {
-       const container = document.getElementById('quizContainer');
--      container.innerHTML = '';
-+      const letter = document.getElementById('phaseLetter3');
-+      letter.classList.add('hidden');
-+      letter.textContent = '';
-       const options = [
--        { text: '🟢 Grifinória - Como Harry Potter!', correct: true },
--        { text: '🟢 Sonserina - Mistério e magia', correct: false },
--        { text: '🔵 Corvinal - Sabedoria sem fim', correct: false },
--        { text: '🟡 Lufa-Lufa - Lealdade e calor', correct: false }
-+        {
-+          text: '🟢 Sonserina no visual, Grifinória no coração — astuta, intensa e corajosa.',
-+          correct: true
-+        },
-+        {
-+          text: '🟣 Só travessura caótica, sem chuva, sem livros, sem magia romântica.',
-+          correct: false
-+        },
-+        {
-+          text: '🟡 Apenas humor da banana, ignorando o restante do roteiro.',
-+          correct: false
-+        }
-       ];
- 
-+      container.innerHTML = '';
-       options.forEach(option => {
--        const btn = document.createElement('button');
--        btn.className = 'quiz-option';
--        btn.textContent = option.text;
--        btn.onclick = () => selectQuizOption(btn, option.correct);
--        container.appendChild(btn);
-+        const button = document.createElement('button');
-+        button.className = 'quiz-option';
-+        button.textContent = option.text;
-+        button.onclick = () => selectQuizOption(button, option.correct);
-+        container.appendChild(button);
-       });
-     }
- 
--    function selectQuizOption(element, isCorrect) {
--      document.querySelectorAll('.quiz-option').forEach(opt => opt.style.pointerEvents = 'none');
--      
--      if (isCorrect) {
--        element.classList.add('correct');
--        element.textContent += ' ✅';
--        setTimeout(() => {
--          nextPhase();
--        }, 1500);
-+    function selectQuizOption(button, correct) {
-+      const letter = document.getElementById('phaseLetter3');
-+      document.querySelectorAll('#quizContainer .quiz-option').forEach(option => option.disabled = true);
-+      if (correct) {
-+        button.classList.add('correct');
-+        button.textContent += ' ✅';
-+        letter.textContent = 'Carta 2: Você consegue ser mistério e abrigo ao mesmo tempo — e acho isso uma das coisas mais lindas em você.';
-+        letter.classList.remove('hidden');
-+        setTimeout(nextPhase, 1600);
-+      } else {
-+        button.classList.add('wrong');
-+        button.textContent += ' ❌';
-+        setTimeout(initQuiz, 1400);
-+      }
-+    }
-+
-+    function initChoices() {
-+      const container = document.getElementById('choiceContainer');
-+      const letter = document.getElementById('phaseLetter4');
-+      letter.classList.add('hidden');
-+      letter.textContent = '';
-+      const choices = [
-+        {
-+          title: '🌧️ Chuva + pôr do sol + biblioteca',
-+          text: 'Mistura tudo que a Nat ama em uma fase só, como pede o roteiro.',
-+          correct: true
-+        },
-+        {
-+          title: '🍌 Apenas o portal da banana',
-+          text: 'Divertido, mas caótico demais para o clímax romântico.',
-+          correct: false
-+        },
-+        {
-+          title: '💤 Dormir e ignorar o mapa inteiro',
-+          text: 'Fofo, porém sem coletar nenhuma memória encantada.',
-+          correct: false
-+        }
-+      ];
-+
-+      container.innerHTML = '';
-+      choices.forEach(choice => {
-+        const tile = document.createElement('button');
-+        tile.className = 'choice-tile';
-+        tile.innerHTML = `<strong style="display:block; margin-bottom:0.35rem;">${choice.title}</strong><span>${choice.text}</span>`;
-+        tile.onclick = () => selectChoice(tile, choice.correct);
-+        container.appendChild(tile);
-+      });
-+    }
-+
-+    function selectChoice(tile, correct) {
-+      const letter = document.getElementById('phaseLetter4');
-+      document.querySelectorAll('#choiceContainer .choice-tile').forEach(option => option.disabled = true);
-+      if (correct) {
-+        tile.classList.add('correct');
-+        letter.textContent = 'Carta 3: Seu mundo fica ainda mais bonito quando tudo se mistura — a calma, a risada, a chuva e a luz.';
-+        letter.classList.remove('hidden');
-+        setTimeout(nextPhase, 1600);
-       } else {
--        element.classList.add('wrong');
--        element.textContent += ' ❌';
-+        tile.classList.add('wrong');
-+        setTimeout(initChoices, 1400);
-       }
-     }
- 
-     function initFood() {
--      foodCollected = 0;
-       const container = document.getElementById('foodContainer');
-+      const score = document.getElementById('foodScore');
-+      const letter = document.getElementById('phaseLetter5');
-+      foodCollected = [];
-+      letter.classList.add('hidden');
-+      letter.textContent = '';
-       container.innerHTML = '';
--      const foods = [
--        { emoji: '🍣', name: 'Sushi' },
--        { emoji: '🍦', name: 'Sorvete' },
--        { emoji: '🥛', name: 'Iogurte' },
--        { emoji: '🍋', name: 'Limão' }
--      ];
--
-       foods.forEach(food => {
--        const btn = document.createElement('button');
--        btn.className = 'btn btn-green';
--        btn.textContent = food.emoji + ' ' + food.name;
--        btn.style.fontSize = '1.5rem';
--        btn.onclick = () => collectFood(btn);
--        container.appendChild(btn);
-+        const token = document.createElement('button');
-+        token.className = 'food-token';
-+        token.innerHTML = `<strong style="display:block; margin-bottom:0.25rem; font-size:1.05rem;">${food.emoji} ${food.name}</strong><span>Coletar energia romântica.</span>`;
-+        token.onclick = () => collectFood(food.name, token);
-+        container.appendChild(token);
-       });
-+      score.innerHTML = '<div class="chip">0/4 itens coletados</div>';
-     }
- 
--    function collectFood(element) {
--      element.style.opacity = '0.3';
--      element.style.pointerEvents = 'none';
--      foodCollected++;
--      document.getElementById('foodScore').textContent = `${foodCollected}/${foodTarget} coletados`;
-+    function collectFood(name, token) {
-+      if (foodCollected.includes(name)) return;
-+      foodCollected.push(name);
-+      token.classList.add('collected');
-+      token.disabled = true;
-+      const score = document.getElementById('foodScore');
-+      score.innerHTML = foodCollected.map(item => `<div class="chip">${item}</div>`).join('') + `<div class="chip">${foodCollected.length}/4</div>`;
- 
--      if (foodCollected === foodTarget) {
--        document.getElementById('foodScore').textContent = '✅ Todos coletados!';
--        setTimeout(() => {
--          nextPhase();
--        }, 1500);
-+      if (foodCollected.length === foods.length) {
-+        const letter = document.getElementById('phaseLetter5');
-+        letter.textContent = 'Carta 4: Eu amo como as suas pequenas preferências viram memórias gigantes quando estou com você.';
-+        letter.classList.remove('hidden');
-+        setTimeout(nextPhase, 1600);
-       }
-     }
- 
--    function restartGame() {
--      currentPhase = 1;
--      foodCollected = 0;
--      updateScene();
-+    function initMascots() {
-+      const container = document.getElementById('mascotContainer');
-+      const status = document.getElementById('heartStatus');
-+      const letter = document.getElementById('phaseLetter6');
-+      mascotCharge = 0;
-+      letter.classList.add('hidden');
-+      letter.textContent = '';
-+      container.innerHTML = '';
-+      mascotOrbs.forEach((orb, index) => {
-+        const button = document.createElement('button');
-+        button.className = 'mascot-orb';
-+        button.innerHTML = `<span class="orb-emoji">${orb.emoji}</span><strong style="display:block; margin-bottom:0.25rem;">${orb.title}</strong><span>${orb.text}</span>`;
-+        button.onclick = () => chargeHeart(button, index);
-+        container.appendChild(button);
-+      });
-+      status.innerHTML = '<div class="heart-fragment">Fragmentos: 0/3</div>';
-+    }
-+
-+    function chargeHeart(button) {
-+      if (button.classList.contains('ready')) return;
-+      mascotCharge += 1;
-+      button.classList.add('ready');
-+      const status = document.getElementById('heartStatus');
-+      status.innerHTML = Array.from({ length: mascotCharge }, () => '<div class="heart-fragment">💙 Fragmento</div>').join('') + `<div class="heart-fragment">${mascotCharge}/3</div>`;
-+      if (mascotCharge === mascotOrbs.length) {
-+        const letter = document.getElementById('phaseLetter6');
-+        letter.textContent = 'Carta 5: Até suas companhias favoritas parecem saber que você merece um final cheio de brilho, cuidado e amor.';
-+        letter.classList.remove('hidden');
-+        setTimeout(nextPhase, 1600);
-+      }
-     }
- 
--    // Iniciar o jogo
-     window.addEventListener('load', () => {
-       createRain();
--      lucide.createIcons();
-+      updateScene();
-     });
-   </script>
-- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e0a57ab6423f249',t:'MTc3NDIzNjQ2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-+ </body>
- </html>
- 
-EOF
-)
+    
+    <script src="script.js"></script>
+  </body>
+</html>
