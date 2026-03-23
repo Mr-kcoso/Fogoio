@@ -10,9 +10,13 @@
   --gold-1: #ffde7d;
   --gold-2: #ca9d23;
   --rose: #ff8fb7;
-  --panel: rgba(9, 18, 40, 0.82);
+  --panel: rgba(8, 18, 39, 0.7);
   --panel-light: rgba(255, 255, 255, 0.92);
-  --pixel-shadow: 0 0 0 4px #18356b, 0 0 0 8px #0c1b39, 12px 12px 0 rgba(0, 0, 0, 0.2);
+  --pixel-shadow: 0 24px 60px rgba(3, 11, 27, 0.34);
+  --soft-shadow: 0 18px 40px rgba(7, 14, 29, 0.2);
+  --outline-soft: rgba(193, 227, 255, 0.3);
+  --card-radius: 28px;
+  --card-radius-sm: 20px;
   --text-soft: #d9ebff;
 }
 
@@ -56,6 +60,8 @@ button {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  width: min(100%, 1440px);
+  margin: 0 auto;
   overflow: hidden;
 }
 
@@ -63,18 +69,20 @@ button {
   position: relative;
   z-index: 5;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 1rem;
-  padding: 1.2rem 1.5rem 0.8rem;
+  gap: 0.9rem 1.25rem;
+  padding: 1rem 1.5rem 0.65rem;
   flex-wrap: wrap;
+  width: min(1220px, calc(100% - 3rem));
+  margin: 0 auto;
 }
 
 .hud-status {
   display: flex;
-  gap: 0.85rem;
+  gap: 0.7rem;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .pixel-title,
@@ -91,18 +99,20 @@ button {
 .mascot-orb,
 .food-token,
 .speech-card {
-  border-radius: 0;
+  border-radius: var(--card-radius);
   box-shadow: var(--pixel-shadow);
 }
 
 .pixel-title {
   display: grid;
-  gap: 0.5rem;
-  background: linear-gradient(180deg, rgba(76, 130, 255, 0.96), rgba(19, 44, 94, 0.97));
+  gap: 0.45rem;
+  background: linear-gradient(180deg, rgba(81, 132, 224, 0.82), rgba(18, 42, 91, 0.9));
   color: #e5f5ff;
-  padding: 1rem 1.1rem;
-  border: 4px solid #bde4ff;
-  min-width: min(100%, 440px);
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--outline-soft);
+  min-width: min(100%, 390px);
+  justify-items: center;
+  text-align: center;
 }
 
 .pixel-title span {
@@ -119,12 +129,14 @@ button {
 }
 
 .pixel-badge {
-  background: rgba(7, 19, 42, 0.82);
-  padding: 0.8rem 1rem;
-  min-width: 210px;
-  border: 4px solid #87c5ff;
+  background: rgba(7, 19, 42, 0.65);
+  padding: 0.68rem 0.9rem;
+  min-width: 180px;
+  border: 1px solid rgba(147, 204, 255, 0.35);
   display: grid;
-  gap: 0.35rem;
+  gap: 0.28rem;
+  justify-items: center;
+  text-align: center;
 }
 
 .hud-label {
@@ -142,19 +154,22 @@ button {
 .progress-frame {
   position: relative;
   z-index: 5;
-  margin: 0 1.5rem 1rem;
-  padding: 0.55rem;
-  background: rgba(3, 9, 23, 0.82);
-  border: 4px solid #9dd0ff;
-  box-shadow: 0 0 0 4px #102242;
+  width: min(1220px, calc(100% - 3rem));
+  margin: 0 auto 1rem;
+  padding: 0.45rem;
+  background: rgba(3, 9, 23, 0.64);
+  border: 1px solid rgba(157, 208, 255, 0.35);
+  border-radius: 999px;
+  box-shadow: var(--soft-shadow);
 }
 
 .progress-track {
   width: 100%;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.15);
+  height: 14px;
+  background: rgba(255, 255, 255, 0.12);
   overflow: hidden;
   position: relative;
+  border-radius: 999px;
 }
 
 .progress-fill {
@@ -244,6 +259,8 @@ button {
   width: min(1200px, 100%);
   display: grid;
   gap: 1.5rem;
+  margin: 0 auto;
+  align-items: center;
 }
 
 .intro-grid,
@@ -260,14 +277,16 @@ button {
 .companion-bubble,
 .pixel-letter,
 .speech-card {
-  border: 4px solid #bde4ff;
-  background: var(--panel);
-  padding: 1.2rem;
+  border: 1px solid rgba(189, 228, 255, 0.26);
+  background: linear-gradient(180deg, rgba(11, 23, 49, 0.78), rgba(8, 18, 39, 0.72));
+  padding: 1.25rem;
+  backdrop-filter: blur(12px);
 }
 
 .hero-panel,
 .finale-panel {
   max-width: 720px;
+  margin-inline: auto;
 }
 
 .panel-kicker {
@@ -334,8 +353,9 @@ li {
 .button-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.9rem;
+  gap: 0.75rem;
   margin-top: 1.5rem;
+  justify-content: center;
 }
 
 .pixel-button,
@@ -343,16 +363,18 @@ li {
 .piano-key,
 .food-token,
 .quiz-option {
-  border: 4px solid #dff4ff;
-  background: linear-gradient(180deg, #62b3ff, #295cc0);
+  border: 1px solid rgba(223, 244, 255, 0.4);
+  background: linear-gradient(180deg, rgba(126, 183, 255, 0.9), rgba(55, 99, 182, 0.96));
   color: white;
   cursor: pointer;
-  transition: transform 0.14s ease, filter 0.14s ease, background 0.18s ease;
+  transition: transform 0.14s ease, filter 0.14s ease, background 0.18s ease, box-shadow 0.18s ease;
 }
 
 .pixel-button {
-  padding: 0.9rem 1.1rem;
+  padding: 0.72rem 1rem;
   font-weight: 700;
+  font-size: 0.94rem;
+  box-shadow: var(--soft-shadow);
 }
 
 .pixel-button.secondary {
@@ -504,11 +526,8 @@ li {
 }
 
 .choice-tile {
-  padding: 1rem;
-  text-align: left;
   display: grid;
   gap: 0.5rem;
-  min-height: 120px;
 }
 
 .choice-tile strong,
@@ -546,66 +565,12 @@ li {
   display: none !important;
 }
 
-.side-panel {
-  align-self: stretch;
-}
-
-.piano-board {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  margin-top: 1.3rem;
-}
-
-.piano-key {
-  min-height: 140px;
-  font-weight: 700;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 1rem;
-  background: linear-gradient(180deg, #fefefe, #b9d7ff);
-  color: #173870;
-}
-
-.status-text {
-  margin-top: 1rem;
-  color: #ffe9b3;
-}
-
 .quiz-box {
   display: grid;
   gap: 1rem;
 }
-
-.quiz-card {
-  display: grid;
-  gap: 0.9rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 4px solid #a8d6ff;
-  padding: 1rem;
-  box-shadow: 0 0 0 4px rgba(9, 23, 50, 0.45);
-}
-
-.quiz-option {
-  padding: 0.9rem 1rem;
-  text-align: left;
-}
-
 .quiz-option.wrong {
   background: linear-gradient(180deg, #ff8f9e, #be334f);
-}
-
-.food-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 1.2rem;
-}
-
-.food-token {
-  min-height: 120px;
-  display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 0.45rem;
-  font-size: 2rem;
 }
 
 .food-token span {
@@ -625,16 +590,6 @@ li {
   background:
     radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.92), transparent 20%),
     linear-gradient(180deg, #ffe7a2, #d9912f);
-}
-
-.moon-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.moon-tile {
-  justify-items: center;
-  text-align: center;
-  min-height: 136px;
 }
 
 .audio-visualizer {
@@ -1005,5 +960,214 @@ li {
 
   .food-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.intro-grid .button-row .pixel-button {
+  padding: 0.62rem 0.9rem;
+  font-size: 0.86rem;
+}
+
+.scene[data-scene='hogwarts'] .pixel-panel,
+.scene[data-scene='piano'] .pixel-panel,
+.scene[data-scene='quiz'] .pixel-panel,
+.scene[data-scene='food'] .pixel-panel,
+.scene[data-scene='moon'] .pixel-panel {
+  text-align: center;
+}
+
+.scene[data-scene='hogwarts'] .feature-list.compact,
+.scene[data-scene='quiz'] .feature-list.compact {
+  justify-items: center;
+  text-align: left;
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+.choice-grid,
+.food-grid,
+.piano-board,
+.quiz-options,
+.quiz-box,
+.status-text,
+.letter-box,
+.scene[data-scene='hogwarts'] #houseContinue,
+.scene[data-scene='piano'] #pianoContinue,
+.scene[data-scene='quiz'] #quizContinue,
+.scene[data-scene='food'] #foodContinue,
+.scene[data-scene='moon'] #moonContinue {
+  width: min(100%, 720px);
+  margin-inline: auto;
+}
+
+.choice-grid,
+.food-grid,
+.piano-board,
+.quiz-options {
+  justify-items: stretch;
+}
+
+.choice-tile {
+  padding: 1.15rem;
+  text-align: center;
+  justify-items: center;
+  min-height: 132px;
+  background: linear-gradient(180deg, rgba(112, 164, 227, 0.82), rgba(42, 73, 133, 0.94));
+}
+
+.choice-tile span {
+  max-width: 20ch;
+}
+
+.choice-tile.selected,
+.food-token.collected,
+.quiz-option.correct,
+.piano-key.active,
+.moon-tile.selected {
+  background: linear-gradient(180deg, rgba(123, 206, 165, 0.96), rgba(53, 114, 96, 0.96));
+}
+
+.piano-board {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 1.3rem;
+  max-width: 760px;
+}
+
+.piano-key {
+  min-height: 156px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.75rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(189, 215, 248, 0.96));
+  color: #173870;
+}
+
+.status-text {
+  margin-top: 1rem;
+  color: #ffe9b3;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 233, 179, 0.18);
+  border-radius: var(--card-radius-sm);
+}
+
+.quiz-card {
+  display: grid;
+  gap: 0.9rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(168, 214, 255, 0.3);
+  padding: 1.2rem;
+  border-radius: var(--card-radius-sm);
+  box-shadow: var(--soft-shadow);
+  text-align: center;
+}
+
+.quiz-options {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.quiz-option {
+  padding: 1rem 1.1rem;
+  text-align: center;
+}
+
+.food-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.2rem;
+  max-width: 660px;
+}
+
+.food-token {
+  min-height: 132px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.5rem;
+  font-size: 2rem;
+  background: linear-gradient(180deg, rgba(113, 171, 228, 0.84), rgba(42, 73, 133, 0.95));
+}
+
+.moon-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 680px;
+}
+
+.moon-tile {
+  justify-items: center;
+  text-align: center;
+  min-height: 146px;
+}
+
+.side-panel {
+  align-self: center;
+  width: min(100%, 420px);
+  margin-inline: auto;
+}
+
+.character-card,
+.companion-bubble,
+.speech-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.08));
+}
+
+.letter-box {
+  margin-top: 1.4rem;
+  color: #143366;
+  background: rgba(252, 247, 232, 0.95);
+  border-color: #ffe39b;
+  border-radius: var(--card-radius-sm);
+  text-align: center;
+}
+
+.pixel-button:hover,
+.choice-tile:hover,
+.piano-key:hover,
+.food-token:hover,
+.quiz-option:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.04);
+  box-shadow: 0 20px 34px rgba(5, 12, 27, 0.24);
+}
+
+.pixel-button:active,
+.choice-tile:active,
+.piano-key:active,
+.food-token:active,
+.quiz-option:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 980px) {
+  .piano-board {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .food-grid,
+  .moon-grid,
+  .choice-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .piano-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .food-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pixel-title,
+  .pixel-badge {
+    min-width: 100%;
+  }
+
+  .intro-grid .button-row .pixel-button,
+  .pixel-button {
+    width: 100%;
   }
 }
